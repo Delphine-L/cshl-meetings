@@ -1,0 +1,43 @@
+class: GalaxyUserTool
+id: foldseek_prostt5_cluster
+name: Foldseek structural clustering
+version: 1.0.0
+description: Cluster proteins by predicted structure on a GPU
+container: quay.io/biocontainers/foldseek:10.941cd33
+requirements:
+  - type: resource
+    cores_min: 32
+    ram_min: 8192
+    cuda_device_count_min: 1
+shell_command: |
+  mkdir weights && cp '$(inputs.model.path)' \
+    weights/prostt5-f16.gguf
+  foldseek easy-cluster '$(inputs.seqs.path)' clu tmp \
+    --prostt5-model weights --gpu 1 \
+    --threads "$GALAXY_SLOTS" \
+    -c $(inputs.coverage) -e $(inputs.evalue)
+inputs:
+  - name: seqs
+    label: Protein FASTA
+    type: data
+    format: [fasta]
+  - name: model
+    label: ProstT5 weights (GGUF)
+    type: data
+  - name: coverage
+    label: Minimum alignment coverage
+    type: float
+    value: 0.8
+  - name: evalue
+    label: E-value threshold
+    type: float
+    value: 0.001
+outputs:
+  - name: clusters
+    type: data
+    format: tabular
+    from_work_dir: clu_cluster.tsv
+  - name: representatives
+    type: data
+    format: fasta
+    from_work_dir: clu_rep_seq.fasta

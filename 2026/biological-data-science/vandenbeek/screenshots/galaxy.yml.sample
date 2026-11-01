@@ -1,0 +1,16 @@
+# Minimal Galaxy config for the poster screenshots. Replace <galaxy-root> and <scratch>.
+# Run from a Galaxy checkout (dev, 26.2+) with a built client:
+#   OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES GALAXY_CONFIG_FILE=galaxy.yml \
+#     .venv/bin/gunicorn 'galaxy.webapps.galaxy.fast_factory:factory()' --pythonpath lib \
+#     -k galaxy.webapps.galaxy.workers.Worker --bind localhost:8091 \
+#     --config python:galaxy.web_stack.gunicorn_config
+galaxy:
+  data_dir: <scratch>/data
+  database_connection: sqlite:///<scratch>/data/universe.sqlite?isolation_level=IMMEDIATE
+  admin_users: poster@example.org
+  bootstrap_admin_api_key: poster-bootstrap-key-0123456789
+  enable_beta_tool_formats: true
+  allow_user_creation: true
+  conda_auto_init: false
+  watch_tools: false
+  enable_celery_tasks: false

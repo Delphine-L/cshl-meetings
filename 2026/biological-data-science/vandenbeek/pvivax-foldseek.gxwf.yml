@@ -1,0 +1,110 @@
+class: GalaxyWorkflow
+name: Plasmodium vivax structural protein families
+doc: Cluster proteins from three P. vivax genomes by ProstT5-predicted structure,
+  then count family sizes, largest first.
+inputs:
+  PvP01 proteome:
+    type: data
+    format: fasta
+    position:
+      left: 0
+      top: 0
+  PvW1 proteome:
+    type: data
+    format: fasta
+    position:
+      left: 0
+      top: 175
+  PvPAM proteome:
+    type: data
+    format: fasta
+    position:
+      left: 0
+      top: 350
+  ProstT5 weights:
+    type: data
+    position:
+      left: 0
+      top: 525
+outputs:
+  family_sizes:
+    outputSource: Family sizes/out_file1
+  representatives:
+    outputSource: Foldseek + ProstT5/representatives
+steps:
+  Pool proteomes:
+    tool_id: cat1
+    position:
+      left: 270
+      top: 90
+    in:
+      input1: PvP01 proteome
+      queries_0|input2: PvW1 proteome
+      queries_1|input2: PvPAM proteome
+    tool_state:
+      queries:
+      - {}
+      - {}
+  Foldseek + ProstT5:
+    run:
+      class: GalaxyUserTool
+      id: foldseek_prostt5_cluster
+      name: Foldseek structural clustering
+      version: 1.0.0
+      description: Cluster proteins by predicted structure on a GPU
+      container: quay.io/biocontainers/foldseek:10.941cd33
+      requirements:
+      - type: resource
+        cores_min: 32
+        ram_min: 8192
+        cuda_device_count_min: 1
+      shell_command: "mkdir weights && cp '$(inputs.model.path)' \\\n  weights/prostt5-f16.gguf\n\
+        foldseek easy-cluster '$(inputs.seqs.path)' clu tmp \\\n  --prostt5-model\
+        \ weights --gpu 1 \\\n  --threads \"$GALAXY_SLOTS\" \\\n  -c $(inputs.coverage)\
+        \ -e $(inputs.evalue)\n"
+      inputs:
+      - name: seqs
+        label: Protein FASTA
+        type: data
+        format:
+        - fasta
+      - name: model
+        label: ProstT5 weights (GGUF)
+        type: data
+      - name: coverage
+        label: Minimum alignment coverage
+        type: float
+        value: 0.8
+      - name: evalue
+        label: E-value threshold
+        type: float
+        value: 0.001
+      outputs:
+      - name: clusters
+        type: data
+        format: tabular
+        from_work_dir: clu_cluster.tsv
+      - name: representatives
+        type: data
+        format: fasta
+        from_work_dir: clu_rep_seq.fasta
+    position:
+      left: 540
+      top: 270
+    in:
+      seqs: Pool proteomes/out_file1
+      model: ProstT5 weights
+    state:
+      coverage: 0.8
+      evalue: 0.001
+  Family sizes:
+    tool_id: Count1
+    position:
+      left: 810
+      top: 270
+    in:
+      input: Foldseek + ProstT5/clusters
+    tool_state:
+      column: '1'
+      delim: T
+      sorting: largest

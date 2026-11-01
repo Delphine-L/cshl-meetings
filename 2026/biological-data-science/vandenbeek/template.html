@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Galaxy UDT Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600;700&display=block" rel="stylesheet">
+<style>
+@page { size: 42in 42in; margin: 0; }
+:root {
+  --ink: #18243a;
+  --navy: #25324d;
+  --muted: #4f5b70;
+  --line: #d5dbe5;
+  --panel: #f3f5f9;
+  --paper: #ffffff;
+  --gold: #f2b10f;
+  --gold-soft: #fff4d1;
+  --teal: #0b7a75;
+  --teal-soft: #e0f2f0;
+  --code-bg: #1d2840;
+  --code-fg: #e8ecf3;
+  --code-key: #8fc7ff;
+  --code-expr: #7ee0c9;
+  --code-num: #ffa98f;
+  --code-dim: #9aa6bb;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); }
+body {
+  width: 42in; height: 42in; overflow: hidden;
+  font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  color: var(--ink); font-size: 27pt; line-height: 1.28;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  display: grid; grid-template-rows: auto 1fr auto;
+}
+code, pre, .mono { font-family: "Atkinson Hyperlegible Mono", ui-monospace, monospace; }
+
+/* Header */
+header {
+  background: var(--navy); color: #fff;
+  padding: 0.65in 1in 0.6in; display: grid;
+  grid-template-columns: 1fr auto; gap: 1in; align-items: center;
+  border-bottom: 0.2in solid var(--gold);
+}
+header h1 { margin: 0; font-size: 94pt; line-height: 1.04; font-weight: 800; letter-spacing: -0.01em; }
+header h1 .udt { color: var(--gold); }
+.authors { margin-top: 0.32in; font-size: 42pt; font-weight: 600; }
+.authors sup, .affil sup { font-size: 0.6em; }
+.affil { margin-top: 0.05in; font-size: 30pt; color: #c9d2e3; }
+.lede { margin-top: 0.3in; font-size: 36pt; line-height: 1.28; max-width: 31in; color: #eef2f8; }
+.lede b { color: var(--gold); }
+.head-right { display: grid; justify-items: stretch; gap: 0.45in; width: 8.2in; }
+.logo { width: 6.4in; justify-self: center; }
+.logo img { width: 100%; display: block; }
+.qr-card { background: #fff; color: var(--ink); border-radius: 0.25in; padding: 0.35in; display: grid; grid-template-columns: auto 1fr; gap: 0.35in; align-items: center; }
+.qr-card img { width: 2.6in; height: 2.6in; display: block; }
+.qr-card .t { font-size: 31pt; font-weight: 800; line-height: 1.12; }
+.qr-card .u { font-size: 22pt; color: var(--muted); margin-top: 0.12in; line-height: 1.25; }
+
+/* Body grid */
+main {
+  padding: 0.6in 1in 0.55in;
+  display: grid; grid-template-columns: 12.6in 14.1in 1fr;
+  gap: 0.5in; min-height: 0;
+}
+.col { display: flex; flex-direction: column; gap: 0.5in; min-height: 0; }
+section {
+  background: var(--panel); border-radius: 0.3in; padding: 0.42in 0.5in 0.48in;
+  border-top: 0.14in solid var(--navy);
+}
+section.grow { flex: 1; }
+h2 {
+  margin: 0 0 0.22in; font-size: 44pt; line-height: 1.08; font-weight: 800; color: var(--navy);
+  display: flex; align-items: center; gap: 0.28in;
+}
+h2 .k {
+  flex: none; width: 0.82in; height: 0.82in; border-radius: 50%; background: var(--gold); color: var(--navy);
+  display: grid; place-items: center; font-size: 36pt;
+}
+p { margin: 0 0 0.24in; }
+p:last-child { margin-bottom: 0; }
+.needs-tags { display: flex; flex-wrap: wrap; gap: 0.12in; margin: -0.06in 0 0.2in; }
+.tag { font-size: 21pt; font-weight: 700; padding: 0.04in 0.18in; border-radius: 0.5in; background: var(--teal-soft); color: var(--teal); border: 2px solid #b9e0db; }
+.src { font-size: 19pt; color: var(--muted); margin-top: 0.2in; }
+
+/* A: needs */
+.needs { list-style: none; margin: 0.1in 0 0.3in; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.16in 0.3in; }
+.needs li { display: grid; grid-template-columns: 0.66in 1fr; gap: 0.18in; align-items: start; line-height: 1.2; }
+.needs .n { width: 0.66in; height: 0.66in; border-radius: 0.16in; background: var(--teal); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 30pt; }
+.needs small { display: block; font-size: 21pt; color: var(--muted); }
+.punch { background: var(--navy); color: #fff; border-radius: 0.22in; padding: 0.3in 0.4in; font-size: 30pt; font-weight: 700; line-height: 1.2; }
+.punch em { color: var(--gold); font-style: normal; }
+
+/* C: editor screenshot with callouts */
+.editor { position: relative; width: 10.2in; margin-right: 0.8in; }
+.editor img { width: 100%; display: block; border: 3px solid var(--line); border-radius: 0.14in; background: #fff; }
+.editor .m { position: absolute; right: -0.68in; transform: translateY(-50%); }
+.editor .pointer { position: absolute; width: 0.3in; height: 0.45in; margin: -0.03in 0 0 -0.03in; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.m {
+  width: 0.46in; height: 0.46in; border-radius: 50%; background: var(--gold); color: var(--navy);
+  font-family: "Atkinson Hyperlegible Next", sans-serif; font-weight: 800; font-size: 21pt; line-height: 1;
+  display: inline-grid; place-items: center; justify-self: end;
+}
+.legend { list-style: none; padding: 0; margin: 0.05in 0 0.4in; display: grid; gap: 0.12in; font-size: 27pt; line-height: 1.18; }
+.legend-c { margin: 0.35in 0 0; grid-template-columns: 1fr 1fr; gap: 0.14in 0.35in; font-size: 25pt; }
+.legend-c li { grid-template-columns: 0.66in 1fr; }
+.legend li { display: grid; grid-template-columns: 0.72in 1fr; align-items: start; }
+.legend .m { width: 0.54in; height: 0.54in; font-size: 24pt; justify-self: start; }
+.legend code { font-size: 0.88em; background: #e3e8f0; padding: 0 0.07in; border-radius: 0.06in; }
+
+/* C: pipeline + screenshot */
+.pipe { display: flex; flex-wrap: wrap; gap: 0.14in; align-items: center; margin: 0 0 0.4in; }
+.pipe span { background: var(--navy); color: #fff; font-weight: 700; font-size: 24pt; padding: 0.08in 0.2in; border-radius: 0.12in; }
+.pipe i { font-style: normal; color: var(--gold); font-weight: 800; font-size: 30pt; }
+.pipe span.gold { background: var(--gold); color: var(--navy); }
+.loop { display: flex; flex-wrap: wrap; gap: 0.12in; align-items: center; margin: 0.05in 0 0.15in; }
+.loop span { background: var(--teal); color: #fff; font-weight: 700; font-size: 24pt; padding: 0.07in 0.2in; border-radius: 0.12in; }
+.loop i { font-style: normal; color: var(--teal); font-weight: 800; font-size: 30pt; }
+p.loopnote { font-size: 24pt; color: var(--muted); line-height: 1.25; margin-bottom: 0.25in; }
+.grad { margin-top: 0.4in; background: #fff; border: 3px solid var(--gold); border-radius: 0.2in; padding: 0.28in 0.34in; }
+.grad h3 { margin: 0 0 0.15in; font-size: 30pt; color: var(--navy); }
+.grad .path { display: flex; flex-wrap: wrap; gap: 0.12in; align-items: center; margin-bottom: 0.18in; }
+.grad .path span { background: var(--gold-soft); border: 2px solid var(--gold); color: var(--navy); font-weight: 800; font-size: 25pt; padding: 0.06in 0.2in; border-radius: 0.12in; }
+.grad .path i { font-style: normal; color: var(--gold); font-weight: 800; font-size: 30pt; }
+.grad p { font-size: 24pt; line-height: 1.26; margin: 0; }
+.grad code { font-size: 0.9em; }
+figure { margin: 0; }
+figure img { width: 100%; display: block; border-radius: 0.14in; border: 3px solid var(--line); background: #fff; }
+figcaption { font-size: 22pt; color: var(--muted); margin-top: 0.15in; line-height: 1.28; }
+h3.sub { font-size: 32pt; color: var(--navy); margin: 0 0 0.2in; }
+
+/* D: routing */
+.rbox { border-radius: 0.2in; padding: 0.2in 0.3in; background: #fff; border: 3px solid var(--line); }
+.rbox h3 { margin: 0 0 0.06in; font-size: 26pt; font-weight: 800; color: var(--navy); }
+.rbox.author { border-color: var(--teal); }
+.rbox.author h3 { color: var(--teal); }
+.rbox.site { border-color: var(--gold); background: var(--gold-soft); }
+.rbox.node { border-color: var(--navy); }
+.rbox code { font-size: 23pt; }
+.rbox ul { margin: 0; padding-left: 0.4in; font-size: 24pt; line-height: 1.25; }
+.rbox li { margin: 0.03in 0; }
+.arrow { height: 0.36in; display: grid; place-items: center; color: var(--navy); font-size: 26pt; line-height: 1; }
+.kv { display: grid; grid-template-columns: auto auto 1fr; gap: 0.02in 0.25in; font-size: 22pt; align-items: baseline; }
+.kv .to { color: var(--muted); }
+.quote { margin-top: 0.22in; font-size: 27pt; font-weight: 700; color: var(--navy); line-height: 1.22; }
+
+/* E: two-sided list */
+.two h3 { font-size: 27pt; margin: 0.1in 0 0.06in; color: var(--teal); }
+.two h3.site { color: #9a6b00; margin-top: 0.25in; }
+.two ul { margin: 0; padding-left: 0.42in; font-size: 25pt; line-height: 1.24; }
+.two li { margin: 0.07in 0; }
+.note { margin-top: 0.22in; border-left: 0.1in solid var(--gold); padding: 0.1in 0 0.1in 0.28in; font-size: 22pt; color: var(--muted); line-height: 1.24; }
+
+/* G */
+.ai ul { margin: 0.05in 0 0.18in; padding-left: 0.42in; font-size: 25pt; line-height: 1.25; }
+.ai li { margin: 0.1in 0; }
+.ai b { color: var(--navy); }
+.see { font-size: 21pt; color: var(--muted); }
+
+/* Footer */
+footer {
+  background: var(--navy); color: #fff; padding: 0.42in 1in;
+  display: grid; grid-template-columns: 1fr auto; gap: 0.9in; align-items: center;
+  border-top: 0.2in solid var(--gold);
+}
+footer h2 { color: #fff; margin-bottom: 0.2in; }
+.axes { display: flex; gap: 0.9in; font-size: 32pt; font-weight: 700; }
+.axes span { color: var(--gold); padding: 0 0.12in; }
+.ack { margin-top: 0.3in; font-size: 19pt; color: #c9d2e3; line-height: 1.32; max-width: 28in; }
+.qrs { display: flex; gap: 0.4in; }
+.qr { background: #fff; color: var(--ink); border-radius: 0.2in; padding: 0.2in; text-align: center; width: 2.7in; }
+.qr img { width: 2.3in; height: 2.3in; display: block; margin: 0 auto 0.1in; }
+.qr div { font-size: 22pt; font-weight: 800; line-height: 1.1; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>From research code to reproducible infrastructure with Galaxy <span class="udt">user-defined tools</span></h1>
+    <div class="authors">Marius van den Beek<sup>1</sup>, John Chilton<sup>1</sup>, Dannon Baker<sup>2</sup> <span class="affil">&nbsp; <sup>1</sup>Penn State University · <sup>2</sup>Johns Hopkins University</span></div>
+    <div class="lede">Galaxy has thousands of tools, yet the one step you need is often missing. A UDT closes that <b>last mile</b>: write it, test it on real data on a production server, iterate, then <b>graduate</b> it to a community tool.</div>
+  </div>
+  <div class="head-right">
+    <div class="logo"><img src="galaxy-logo.svg" alt="Galaxy"></div>
+    <div class="qr-card"><img src="qr-signup.svg" alt="QR code: request access"><div><div class="t">Try it on usegalaxy.org</div><div class="u">Request access once at udt-signup.galaxyproject.org. No install or review per tool.</div></div></div>
+  </div>
+</header>
+
+<main>
+  <div class="col">
+    <section>
+      <h2><span class="k">A</span>The gap</h2>
+      <p>Research code starts as a notebook, a lab script, a published method or AI-drafted code. Writing the first version is the easy part. To become a step you can rerun, scale up and share, it also needs:</p>
+      <ul class="needs">
+        <li><span class="n">1</span><span><b>Interface</b><small>typed inputs and outputs</small></span></li>
+        <li><span class="n">2</span><span><b>Environment</b><small>the exact software</small></span></li>
+        <li><span class="n">3</span><span><b>Data</b><small>large datasets, in place</small></span></li>
+        <li><span class="n">4</span><span><b>Compute</b><small>cores, memory, GPUs</small></span></li>
+        <li><span class="n">5</span><span><b>Provenance</b><small>what ran, on what, how</small></span></li>
+        <li><span class="n">6</span><span><b>Sharing</b><small>a step others can reuse</small></span></li>
+      </ul>
+      <p>On a shared Galaxy server, a new tool must also be wrapped, reviewed and installed by an administrator: the right default for shared tools, but slow for one small step.</p>
+      <div class="punch">A user-defined tool (UDT) covers all six in <em>about 40 lines</em>, in your own account, with no install to wait for.</div>
+    </section>
+
+    <section class="grow">
+      <h2><span class="k">B</span>The last mile</h2>
+      <div class="needs-tags"><span class="tag">3 Data</span><span class="tag">6 Sharing</span></div>
+      <p>usegalaxy.org runs <b>~2,500 tools</b> from a Tool Shed of <b>8,000+ repositories</b>. What's missing is usually one small step: a new method, an extra option, a wrapper merged but not yet installed.</p>
+      <div class="loop"><span>Write</span><i>→</i><span>Run on real data</span><i>→</i><span>Inspect</span><i>→</i><span>Edit</span><i>↺</i></div>
+      <p class="loopnote">Each round is a save in the tool editor, on the production server and real data.</p>
+      <figure>
+        <img src="shots/workflow.png" alt="Galaxy workflow editor: three proteomes pooled, clustered by the Foldseek UDT, then counted">
+        <figcaption>Three <i>P. vivax</i> proteomes (PvP01, PvW1, PvPAM) are pooled, clustered by the Foldseek UDT (step 6), and counted into family sizes with standard tools. Importing the workflow brings the UDT along.</figcaption>
+      </figure>
+      <div class="grad">
+        <h3>Then graduate it to a community tool</h3>
+        <div class="path"><span>UDT in your account</span><i>→</i><span>tools-iwc-lab</span><i>→</i><span>tools-iuc</span></div>
+        <p>When a UDT proves itself, turn it into a regular wrapper and open a pull request to <b>galaxyproject/tools-iwc-lab</b>: Planemo lint and tests in CI, published to the Tool Shed under the experimental <code>iwc-lab</code> owner. Mature wrappers move on to tools-iuc, installable on any Galaxy server.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section>
+      <h2><span class="k">C</span>Anatomy of a UDT</h2>
+      <p>Foldseek clustering with ProstT5-predicted structures, as run on usegalaxy.org with 32 cores and a GPU, in Galaxy's tool editor.</p>
+      {{EDITOR}}
+          <ul class="legend legend-c">
+        <li><span class="m">1</span><span>The container is the environment, pinned by tag</span></li>
+        <li><span class="m">2</span><span>A resource request: cores, memory, a GPU (<b>E</b>)</span></li>
+        <li><span class="m">3</span><span><code>$(inputs.…)</code> are typed, sandboxed expressions; hover shows each type (<b>D</b>)</span></li>
+        <li><span class="m">4</span><span><code>$GALAXY_SLOTS</code>: the site sets the core count</span></li>
+        <li><span class="m">5</span><span>Typed inputs become the form in <b>F</b></span></li>
+        <li><span class="m">6</span><span>Outputs become datasets with provenance</span></li>
+      </ul>
+    </section>
+
+    <section class="grow">
+      <h2><span class="k">D</span>Safe by construction</h2>
+      <div class="two">
+        <h3>In the tool definition</h3>
+        <ul>
+          <li>Commands are templated with sandboxed JavaScript expressions that cannot reach the database or filesystem</li>
+          <li>A container is mandatory</li>
+          <li>Inputs are typed and validated before a job exists</li>
+        </ul>
+        <h3 class="site">At the site</h3>
+        <ul>
+          <li>Access is granted once per account</li>
+          <li>Routing and resource limits stay with the site (<b>E</b>)</li>
+        </ul>
+      </div>
+      <div class="note">Each job runs with minimal permissions and can only access its own input and output data.</div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section>
+      <h2><span class="k">E</span>Requesting compute</h2>
+      <div class="rbox author">
+        <h3>The tool declares what it needs</h3>
+        <div class="kv mono"><span>cores_min: 32</span><span class="to">→</span><span>cores 32</span><span>ram_min: 8192</span><span class="to">→</span><span>mem 8 GiB</span><span>cuda_device_count_min: 1</span><span class="to">→</span><span>gpus 1</span></div>
+      </div>
+      <div class="arrow">▼</div>
+      <div class="rbox site">
+        <h3>The site's job router (TPV) applies policy</h3>
+        <ul>
+          <li>Only destinations that opt in accept UDT jobs</li>
+          <li>GPU requests need the <b>GPU Access</b> role</li>
+          <li>Per-user pools cap a user's total cores, memory, GPUs</li>
+        </ul>
+      </div>
+      <div class="arrow">▼</div>
+      <div class="rbox node">
+        <h3>Jetstream2 GPU node (NSF ACCESS)</h3>
+        <ul>
+          <li>Pulsar + Singularity; container required</li>
+          <li>32 cores become <code>$GALAXY_SLOTS</code>; 1 GPU</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="k">F</span>What Galaxy does with it</h2>
+      <div class="pipe"><span>Validate</span><i>→</i><span>Build form</span><i>→</i><span>Run in container</span><i>→</i><span>Record provenance</span><i>→</i><span>Reuse in workflows</span></div>
+      <figure>
+        <img src="shots/form.png" alt="Galaxy tool form generated from the Foldseek UDT">
+        <figcaption>The form Galaxy built from the <code>inputs</code> block: dataset pickers filtered by format, labelled numeric fields with defaults.</figcaption>
+      </figure>
+    </section>
+
+    <section class="grow ai">
+      <h2><span class="k">G</span>What AI agents do with UDTs</h2>
+      <ul>
+        <li><b>Galaxy Workflow Foundry</b> gives AI agents the knowledge to translate pipelines from other systems into Galaxy workflows. Converting the Nextflow pipeline nf-core/rnaseq for usegalaxy.org, every step mapped to an installed Galaxy tool except RSEM quantification: its community wrapper was merged but not yet installed. The agent wrote one RSEM UDT so the workflow could run now. It reproduced the wrapper's test outputs exactly.</li>
+        <li><b>Orbit</b>, an AI assistant that plans and runs analyses on Galaxy, builds the tool when none fits. It writes a UDT, has Galaxy validate it, runs it on the real data, reads any failure, fixes and re-creates it, and carries on with the analysis. Each definition is saved with the analysis notebook, keyed to the exact tool that ran.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div>
+    <h2>A middle ground</h2>
+    <div class="axes">
+      <div>notebook<span>↔</span>production software</div>
+      <div>personal code<span>↔</span>community tools</div>
+      <div>an algorithm<span>↔</span>infrastructure to run it</div>
+    </div>
+    <div class="ack">usegalaxy.org is supported by NIH and NSF grants U24HG006620, U24HG010263, U24AI183870, U24CA284167, OT2OD037936 and 2419522. UDT jobs run on Jetstream2 at Indiana University (NSF OAC-2005506) through ACCESS, which is supported by NSF grants 2138259, 2138286, 2138307, 2137603 and 2138296. Foldseek UDT on usegalaxy.org: Anton Nekrutenko. Related posters: Galaxy Workflow Foundry (Chilton) · Orbit and Galaxy UDTs (Cain) · Orbit (Nekrutenko).</div>
+  </div>
+  <div class="qrs">
+    <div class="qr"><img src="qr-signup.svg" alt=""><div>Request access</div></div>
+    <div class="qr"><img src="qr-docs.svg" alt=""><div>Docs</div></div>
+    <div class="qr"><img src="qr-code.svg" alt=""><div>Source</div></div>
+  </div>
+</footer>
+</body>
+</html>

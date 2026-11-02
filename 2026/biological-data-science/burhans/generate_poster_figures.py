@@ -224,6 +224,12 @@ def build_figure1() -> None:
 # ==============================================================================
 # FIGURE 2: Matrix Calibration + All-10-Chromosome × 20-Window Referee Map
 # ==============================================================================
+def cell_fg(fill: str) -> str:
+    """Score text colour for a filled cell: white on BLUE (5.2:1), INK on GREEN and VERMILION, where white
+    reads at only 3.4:1 and 3.9:1."""
+    return "#ffffff" if fill == BLUE else INK
+
+
 def build_figure2() -> None:
     w, h = 900, 340
     out = svg_header(w, h)
@@ -368,11 +374,11 @@ def build_figure2() -> None:
         else:
             acol = GREEN if (aw == 40 and al == 0) else BLUE
             out.append(f'<rect x="{bx0+2}" y="{yy}" width="39" height="16.5" rx="3" fill="{acol}"/>')
-            out.append(f'<text x="{bx0+21.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="#ffffff" font-weight="700">{aw}-{al}</text>')
+            out.append(f'<text x="{bx0+21.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="{cell_fg(acol)}" font-weight="700">{aw}-{al}</text>')
         lw, ll = loc_scores[ctag]
         lcol = GREEN if (lw == 40 and ll == 0) else (BLUE if lw > ll else VERMILION)
         out.append(f'<rect x="{bx0+45}" y="{yy}" width="39" height="16.5" rx="3" fill="{lcol}"/>')
-        out.append(f'<text x="{bx0+64.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="#ffffff" font-weight="700">{lw}-{ll}</text>')
+        out.append(f'<text x="{bx0+64.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="{cell_fg(lcol)}" font-weight="700">{lw}-{ll}</text>')
 
         for w_idx, st in enumerate(win_grid[ctag]):
             wx = bx0 + 92 + w_idx * 9.5

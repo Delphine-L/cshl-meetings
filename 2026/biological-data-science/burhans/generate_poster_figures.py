@@ -450,11 +450,11 @@ def build_figure2() -> None:
 
     cy_card = 224
     out.append(f'<rect x="630" y="{cy_card}" width="256" height="102" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
-    out.append(f'<text x="638" y="{cy_card+18}" class="lbl">GC match +100 vs AT +80 (train AT = 57.7%)</text>')
+    out.append(f'<text x="638" y="{cy_card+18}" class="lbl">GC match +100 vs AT +80</text>')
     out.append(f'<text x="638" y="{cy_card+36}" class="ax">Ti: −92 · Tv: −191 A-C/G-T, −197 C-G, −198 A-T</text>')
-    out.append(f'<text x="638" y="{cy_card+54}" class="ax">Pair replication ΔH = 0.0021 bits (|ΔS| ≤ 1)</text>')
-    out.append(f'<text x="638" y="{cy_card+72}" class="lbl" fill="{BLUE}">Gap 682/51 (= 400/30 × 1.414/0.83):</text>')
-    out.append(f'<text x="638" y="{cy_card+89}" class="ax">79.6% CDS cov on chr3 (550/40: 70.6% 1-cov)</text>')
+    out.append(f'<text x="638" y="{cy_card+54}" class="ax">Either pair alone: every entry within 1 unit</text>')
+    out.append(f'<text x="638" y="{cy_card+72}" class="lbl" fill="{BLUE}">Gap 682/51 (400/30 × 1.705 mismatch ratio):</text>')
+    out.append(f'<text x="638" y="{cy_card+89}" class="ax">70.6% single coverage after chaining (550/40: 70.1%)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure2_matrix_calibration.svg").write_text("\n".join(out))
@@ -572,7 +572,7 @@ def build_figure3() -> None:
 
     out.append(f'<rect x="{bx0}" y="468" width="414" height="78" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
     out.append(f'<text x="{bx0+10}" y="486" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>')
-    out.append(f'<text x="{bx0+10}" y="504" class="ax">• 99.99% hg38×panTro6 chr21 chains (56.8 vs 102.4 min)</text>')
+    out.append(f'<text x="{bx0+10}" y="504" class="ax">• 99.99% of UCSC hg38×panTro6 chr21 chain pairs</text>')
     out.append(f'<text x="{bx0+10}" y="521" class="ax">• EH23a×b: med 28 min/job (max 49 vs 660 min), RAM &lt; 3.97 GB</text>')
     out.append(f'<text x="{bx0+10}" y="538" class="ax">• Byte-identical doRecipBest chains across 5 test queries</text>')
 
@@ -660,10 +660,9 @@ def build_figure4() -> None:
 
     rx0 = 492
     bars = [
-        ("TPS family (41 genes: 35 in 9 clusters + 6)", "418/8,856 pruned (4.7%)", 4.7, SKY),
-        ("BBE-like family (35 genes: 31 in 9 clusters + 4)", "807/7,560 pruned (10.7%)", 10.7, BLUE),
-        ("Pre-filter recovered pairs reusing paralog", "569/1,225 reuse paralog (46.4%)", 46.4, VERMILION),
-        ("Recovered pairs reusing ≥50% shared CDS", "455/1,225 reuse ≥50% CDS (37.1%)", 37.1, ORANGE),
+        ("TPS family (41 genes: 31 in 9 clusters + 10)", "418/8,856 pruned (4.7%)", 4.7, SKY),
+        ("BBE-like family (35 genes: 29 in 9 clusters + 6)", "807/7,560 pruned (10.7%)", 10.7, BLUE),
+        ("Recovered pairs overlapping a paralog's interval", "569/1,225 (46.4%)", 46.4, VERMILION),
     ]
     for idx, (blbl, bval, pct, col) in enumerate(bars):
         yy = 54 + idx * 38
@@ -755,7 +754,7 @@ def build_figure5() -> None:
     out.append(f'<line x1="22" y1="303" x2="40" y2="303" stroke="{GREEN}" stroke-width="3"/>')
     out.append('<text x="45" y="307" class="lbl">Male Y-carriers (BCMb 0.976, GRMa 0.984, KOMPb 0.987)</text>')
     out.append(f'<line x1="22" y1="319" x2="40" y2="319" stroke="{VERMILION}" stroke-width="3"/>')
-    out.append('<text x="45" y="323" class="lbl">Female XX (V3 3/3: cs10 0.071, EH23a/b ≤0.077 · P4 30/30 ≤0.320)</text>')
+    out.append('<text x="45" y="323" class="lbl">Female XX (V3 3/3: cs10 0.071, EH23a/b ≤0.077)</text>')
 
     # Divider at x = 452
     out.append(f'<line x1="452" y1="12" x2="452" y2="{h-12}" stroke="{LINE}"/>')
@@ -844,10 +843,11 @@ def build_figure5() -> None:
 
     out.append(f'<rect x="{rx}" y="148" width="168" height="82" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
     out.append(f'<text x="{rx+8}" y="165" class="lbl" fill="{NAVY}">TOGA2 v2.0.9 Pilot</text>')
-    out.append(f'<text x="{rx+8}" y="182" class="lbl" fill="{BLUE}">24,503 std / 758 anom</text>')
-    out.append(f'<text x="{rx+8}" y="197" class="ax">• C-floor: 25 L/M/UL (0.10%)</text>')
-    out.append(f'<text x="{rx+8}" y="211" class="ax">• EH23a: 8.5% prod / 7.3% loose</text>')
-    out.append(f'<text x="{rx+8}" y="225" class="ax">• 221 all.chain (1.45 TB)</text>')
+    # cannabis-genome reports/evidence/toga2_pilot_2026-10-30.md (2026-11-02 update): standard L+UL of 24,503
+    out.append(f'<text x="{rx+8}" y="182" class="lbl" fill="{BLUE}">C-floor: 25 L/UL (0.10%)</text>')
+    out.append(f'<text x="{rx+8}" y="197" class="ax">• EH23a L/UL: prod 8.48%</text>')
+    out.append(f'<text x="{rx+8}" y="211" class="ax">• loose 7.26%, filled 6.77%</text>')
+    out.append(f'<text x="{rx+8}" y="225" class="ax" fill="{VERMILION}">• No arm chosen (B6 pending)</text>')
 
     out.append(f'<rect x="{rx}" y="238" width="168" height="80" rx="7" fill="#fff4d1" stroke="{GOLD}"/>')
     out.append(f'<text x="{rx+8}" y="255" class="lbl" fill="{NAVY}">Phenotype Ledger</text>')

@@ -277,7 +277,7 @@
 <text x="192" y="450" class="lbl mono" fill="#0072B2">6.50 TB (−56.5%, 8.45 TB saved)</text>
 <rect x="20" y="468" width="414" height="78" rx="7" fill="#f8fafd" stroke="#d5dbe5"/>
 <text x="30" y="486" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>
-<text x="30" y="504" class="ax">• 99.99% hg38×panTro6 chr21 chains (56.8 vs 102.4 min)</text>
+<text x="30" y="504" class="ax">• 99.99% of UCSC hg38×panTro6 chr21 chain pairs</text>
 <text x="30" y="521" class="ax">• EH23a×b: med 28 min/job (max 49 vs 660 min), RAM &lt; 3.97 GB</text>
 <text x="30" y="538" class="ax">• Byte-identical doRecipBest chains across 5 test queries</text>
 <line x1="448" y1="288" x2="448" y2="548" stroke="#d5dbe5" stroke-width="1.5"/>

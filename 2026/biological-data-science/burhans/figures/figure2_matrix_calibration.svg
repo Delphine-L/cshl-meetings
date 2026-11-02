@@ -369,9 +369,9 @@
 <rect x="818" y="178" width="45" height="33" rx="5" fill="#56B4E9"/>
 <text x="840.5" y="198.5" text-anchor="middle" class="lbl mono" fill="#ffffff">+80</text>
 <rect x="630" y="224" width="256" height="102" rx="7" fill="#f8fafd" stroke="#d5dbe5"/>
-<text x="638" y="242" class="lbl">GC match +100 vs AT +80 (train AT = 57.7%)</text>
+<text x="638" y="242" class="lbl">GC match +100 vs AT +80</text>
 <text x="638" y="260" class="ax">Ti: −92 · Tv: −191 A-C/G-T, −197 C-G, −198 A-T</text>
-<text x="638" y="278" class="ax">Pair replication ΔH = 0.0021 bits (|ΔS| ≤ 1)</text>
-<text x="638" y="296" class="lbl" fill="#0072B2">Gap 682/51 (= 400/30 × 1.414/0.83):</text>
-<text x="638" y="313" class="ax">79.6% CDS cov on chr3 (550/40: 70.6% 1-cov)</text>
+<text x="638" y="278" class="ax">Either pair alone: every entry within 1 unit</text>
+<text x="638" y="296" class="lbl" fill="#0072B2">Gap 682/51 (400/30 × 1.705 mismatch ratio):</text>
+<text x="638" y="313" class="ax">70.6% single coverage after chaining (550/40: 70.1%)</text>
 </svg>

@@ -356,7 +356,7 @@ def build_figure2() -> None:
             if st == "dom":
                 wcol = GREEN
             elif st == "win":
-                wcol = SKY
+                wcol = BLUE
             elif st == "split":
                 wcol = GOLD
             elif st == "loss":
@@ -368,7 +368,7 @@ def build_figure2() -> None:
     # Two-row legend under Panel B (strictly inside [278, 608])
     out.append(f'<rect x="280" y="286" width="9" height="9" rx="2" fill="{GREEN}"/>')
     out.append(f'<text x="292" y="294" class="ax">40–0 Dominant (7 arms, 28 win)</text>')
-    out.append(f'<rect x="462" y="286" width="9" height="9" rx="2" fill="{SKY}"/>')
+    out.append(f'<rect x="462" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
     out.append(f'<text x="474" y="294" class="ax">Majority win (67/70 win)</text>')
 
     out.append(f'<rect x="280" y="303" width="9" height="9" rx="2" fill="{GOLD}"/>')
@@ -499,16 +499,18 @@ def build_figure3() -> None:
     out.append(f'<text x="{wx0+12}" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
     out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>')
 
-    # Two-row legend for Panel A (strictly inside [18, 366])
-    out.append(f'<rect x="18" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="30" y="300" class="ax">Salk HiFi phased (181)</text>')
-    out.append(f'<rect x="165" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
-    out.append(f'<text x="177" y="300" class="ax">Unphased diploid</text>')
+    # Two-row legend for Panel A covering all 4 bar classes + rbest envelope (strictly inside [16, 368])
+    out.append(f'<rect x="16" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
+    out.append(f'<text x="28" y="300" class="ax">Salk HiFi phased (98)</text>')
+    out.append(f'<rect x="182" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
+    out.append(f'<text x="194" y="300" class="ax">Unphased/diploid (84)</text>')
 
-    out.append(f'<rect x="18" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
-    out.append(f'<text x="30" y="316" class="ax">Pike ONT (10)</text>')
-    out.append(f'<rect x="165" y="308" width="9" height="9" rx="2" fill="{INK}"/>')
-    out.append(f'<text x="177" y="316" class="ax">rbest upper envelope</text>')
+    out.append(f'<rect x="16" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
+    out.append(f'<text x="28" y="316" class="ax">T2T/GWH &amp; other (24)</text>')
+    out.append(f'<rect x="156" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
+    out.append(f'<text x="168" y="316" class="ax">Pike ONT (10)</text>')
+    out.append(f'<line x1="252" y1="312.5" x2="266" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
+    out.append(f'<text x="270" y="316" class="ax">rbest envelope</text>')
 
     # Divider 1 at x = 376
     out.append(f'<line x1="376" y1="12" x2="376" y2="{h-12}" stroke="{LINE}"/>')

@@ -69,8 +69,8 @@
 <circle cx="340.1" cy="221.5" r="3.5" fill="#009E73"/>
 <rect x="162" y="45" width="9" height="6" rx="2" fill="#D55E00"/>
 <text x="174" y="51" class="ax">Arrived (0.0–80.9%)</text>
-<rect x="274" y="45" width="9" height="6" rx="2" fill="#009E73"/>
-<text x="286" y="51" class="ax">4-detector union (62–67%)</text>
+<rect x="292" y="45" width="9" height="6" rx="2" fill="#009E73"/>
+<text x="304" y="51" class="ax">4-detector (62–67%)</text>
 <rect x="14" y="282" width="420" height="96" rx="8" fill="#f8fafd" stroke="#d5dbe5"/>
 <text x="24" y="299" class="title">4-Detector Breakdown &amp; Partition Audit</text>
 <text x="114" y="317.0" text-anchor="end" class="ax">WindowMasker</text>

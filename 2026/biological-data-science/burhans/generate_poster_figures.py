@@ -263,21 +263,22 @@ def build_figure2() -> None:
     ]
 
     def poly(pts: list[tuple[float, float]]) -> str:
-        return " ".join(f"{x_id(p):.1f},{ay1 - v*(ay1-ay0-16):.1f}" for p, v in pts)
+        return " ".join(f"{x_id(p):.1f},{ay1 - v*(ay1-ay0-36):.1f}" for p, v in pts)
 
     out.append(f'<polyline fill="none" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3" points="{poly(pts_unfilt)}"/>')
     out.append(f'<polyline fill="none" stroke="{BLUE}" stroke-width="2.8" points="{poly(pts_colin)}"/>')
 
-    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+16}" text-anchor="middle" class="ax" fill="{VERMILION}">HOXD70 (&lt;70%)</text>')
-    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+28}" text-anchor="middle" class="ax" fill="{VERMILION}">49.7% noise</text>')
-    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+16}" text-anchor="middle" class="lbl" fill="{GREEN}">[85, 95)%</text>')
-    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+28}" text-anchor="middle" class="ax" fill="{GREEN}">331.05 Mb</text>')
+    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+15}" text-anchor="middle" class="ax" fill="{VERMILION}">HOXD70 (&lt;70%)</text>')
+    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+27}" text-anchor="middle" class="ax" fill="{VERMILION}">49.7% noise</text>')
+    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+15}" text-anchor="middle" class="lbl" fill="{GREEN}">[85, 95)%</text>')
+    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+27}" text-anchor="middle" class="ax" fill="{GREEN}">331.05 Mb</text>')
 
-    out.append(f'<rect x="{ax0+3}" y="{ay0+38}" width="184" height="32" rx="4" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<line x1="{ax0+6}" y1="{ay0+48}" x2="{ax0+20}" y2="{ay0+48}" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
-    out.append(f'<text x="{ax0+24}" y="{ay0+51}" class="ax">Unfiltered (54.5% off-chr)</text>')
-    out.append(f'<line x1="{ax0+6}" y1="{ay0+63}" x2="{ax0+20}" y2="{ay0+63}" stroke="{BLUE}" stroke-width="2.8"/>')
-    out.append(f'<text x="{ax0+24}" y="{ay0+66}" class="ax">Colinear single-chain (6.6%)</text>')
+    # Bottom-right legend strictly below both curves (x in [150, 247], y in [248, 282])
+    out.append(f'<rect x="150" y="248" width="97" height="34" rx="4" fill="#ffffff" stroke="{LINE}"/>')
+    out.append(f'<line x1="154" y1="259" x2="165" y2="259" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
+    out.append(f'<text x="168" y="262" class="ax">Unfiltered (54.5%)</text>')
+    out.append(f'<line x1="154" y1="273" x2="165" y2="273" stroke="{BLUE}" stroke-width="2.8"/>')
+    out.append(f'<text x="168" y="276" class="ax">Colinear (6.6%)</text>')
 
     # Divider 1 at x = 266
     out.append(f'<line x1="266" y1="12" x2="266" y2="{h-12}" stroke="{LINE}"/>')
@@ -491,12 +492,11 @@ def build_figure3() -> None:
 
     ymed = y_cov(65.2)
     out.append(f'<line x1="{wx0}" y1="{ymed:.1f}" x2="{wx1}" y2="{ymed:.1f}" stroke="{VERMILION}" stroke-width="1.5" stroke-dasharray="4,3"/>')
-    out.append(f'<rect x="{wx0+4}" y="{ymed-17:.1f}" width="252" height="14" rx="2" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<text x="{wx0+8}" y="{ymed-6:.1f}" class="lbl" fill="{VERMILION}">Median synNet = 65.2% (rbest = 70.1%)</text>')
 
-    out.append(f'<rect x="{wx0+4}" y="{y_cov(28.0):.1f}" width="108" height="13" rx="2" fill="#ffffff"/>')
-    out.append(f'<text x="{wx0+6}" y="{y_cov(28.0)+9:.1f}" class="ax">Chemdog91 (12.2%)</text>')
-    out.append(f'<text x="{wx1-4}" y="{y_cov(92.0):.1f}" text-anchor="end" class="ax">ACDC diploid (85.1%)</text>')
+    # Summary callout placed in the open upper-left whitespace (y in [60, 94], strictly above all bars and rbest points)
+    out.append(f'<rect x="{wx0+6}" y="60" width="212" height="32" rx="4" fill="#ffffff" stroke="{LINE}"/>')
+    out.append(f'<text x="{wx0+12}" y="73" class="lbl" fill="{VERMILION}">Median synNet = 65.2% (rbest = 70.1%)</text>')
+    out.append(f'<text x="{wx0+12}" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
     out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>')
 
     # Two-row legend for Panel A (strictly inside [18, 366])

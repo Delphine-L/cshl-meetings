@@ -199,7 +199,7 @@ def build_figure1() -> None:
         cuts = sorted(cuts_by_acc[acc])
         n_pieces = len(cuts) + 1
         out.append(f'<text x="{cx0-8}" y="{yy+10}" text-anchor="end" class="lbl">{cname} <tspan class="ax mono">({clen/1e6:.0f}M)</tspan></text>')
-        edges = [0] + cuts + [clen]
+        edges = [0, *cuts, clen]
         for p_idx in range(len(edges) - 1):
             x_start = cx0 + (edges[p_idx] / max_len) * (cx1 - cx0)
             x_end = cx0 + (edges[p_idx + 1] / max_len) * (cx1 - cx0)
@@ -213,7 +213,7 @@ def build_figure1() -> None:
         out.append(f'<text x="842" y="{yy+10}" class="ax mono">{n_pieces} pcs</text>')
 
     out.append(f'<rect x="462" y="352" width="424" height="26" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append(f'<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 chr pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs) highlighted</text>')
+    out.append('<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 chr pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs) highlighted</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure1_architecture.svg").write_text("\n".join(out))
@@ -293,9 +293,9 @@ def build_figure2() -> None:
     # Bottom-right legend strictly below the plot frame (x in [72, 254], y in [276, 322])
     out.append(f'<rect x="72" y="276" width="182" height="44" rx="4" fill="#ffffff" stroke="{LINE}"/>')
     out.append(f'<line x1="78" y1="290" x2="91" y2="290" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
-    out.append(f'<text x="95" y="293" class="ax">Unfiltered (45.2% &lt;70% id)</text>')
+    out.append('<text x="95" y="293" class="ax">Unfiltered (45.2% &lt;70% id)</text>')
     out.append(f'<line x1="78" y1="308" x2="91" y2="308" stroke="{BLUE}" stroke-width="2.6"/>')
-    out.append(f'<text x="95" y="311" class="ax">Colinear 1-chain (54.5% vs 6.6%)</text>')
+    out.append('<text x="95" y="311" class="ax">Colinear 1-chain (54.5% vs 6.6%)</text>')
 
     # Divider 1 at x = 266
     out.append(f'<line x1="266" y1="12" x2="266" y2="{h-12}" stroke="{LINE}"/>')
@@ -388,16 +388,16 @@ def build_figure2() -> None:
 
     # Two-row legend under Panel B (strictly inside [278, 610])
     out.append(f'<rect x="278" y="286" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="290" y="294" class="ax">40–0 Dominant (7 arms, 2 loci, 28/70)</text>')
+    out.append('<text x="290" y="294" class="ax">40–0 Dominant (7 arms, 2 loci, 28/70)</text>')
     out.append(f'<rect x="478" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="490" y="294" class="ax">Crossing win (39/70)</text>')
+    out.append('<text x="490" y="294" class="ax">Crossing win (39/70)</text>')
 
     out.append(f'<rect x="278" y="303" width="9" height="9" rx="2" fill="{GOLD}"/>')
-    out.append(f'<text x="290" y="311" class="ax">Split (1/70)</text>')
+    out.append('<text x="290" y="311" class="ax">Split (1/70)</text>')
     out.append(f'<rect x="356" y="303" width="9" height="9" rx="2" fill="{VERMILION}"/>')
-    out.append(f'<text x="368" y="311" class="ax">Loss (1 locus, 2/70)</text>')
-    out.append(f'<rect x="478" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
-    out.append(f'<text x="490" y="311" class="ax">Ineligible (&lt;500 kb)</text>')
+    out.append('<text x="368" y="311" class="ax">Loss (1 locus, 2/70)</text>')
+    out.append('<rect x="478" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
+    out.append('<text x="490" y="311" class="ax">Ineligible (&lt;500 kb)</text>')
 
     # Divider 2 at x = 618
     out.append(f'<line x1="618" y1="12" x2="618" y2="{h-12}" stroke="{LINE}"/>')
@@ -499,7 +499,7 @@ def build_figure3() -> None:
     n_q = len(q_rows)
     bar_step = (wx1 - wx0) / float(n_q)
     rbest_pts = []
-    for idx, (lbl, aclass, syn_p, rb_p) in enumerate(q_rows):
+    for idx, (_lbl, aclass, syn_p, rb_p) in enumerate(q_rows):
         xx = wx0 + idx * bar_step
         rbest_pts.append(f"{xx:.1f},{y_cov(rb_p):.1f}")
         if "Salk HiFi" in aclass:
@@ -525,16 +525,16 @@ def build_figure3() -> None:
 
     # 2x3 legend for Panel A: 4 bar classes in cols 1-2 + 2 dashed lines in col 3 (strictly inside [14, 368])
     out.append(f'<rect x="14" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="26" y="300" class="ax">Salk HiFi phased (98)</text>')
+    out.append('<text x="26" y="300" class="ax">Salk HiFi phased (98)</text>')
     out.append(f'<rect x="144" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
-    out.append(f'<text x="156" y="300" class="ax">Unphased/diploid (84)</text>')
+    out.append('<text x="156" y="300" class="ax">Unphased/diploid (84)</text>')
     out.append(f'<line x1="258" y1="296.5" x2="272" y2="296.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
     out.append(f'<text x="276" y="300" class="ax">Median ({syn_med:.1f}%)</text>')
 
     out.append(f'<rect x="14" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="26" y="316" class="ax">T2T/GWH (7) &amp; other (17)</text>')
+    out.append('<text x="26" y="316" class="ax">T2T/GWH (7) &amp; other (17)</text>')
     out.append(f'<rect x="144" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
-    out.append(f'<text x="156" y="316" class="ax">Pike ONT (10)</text>')
+    out.append('<text x="156" y="316" class="ax">Pike ONT (10)</text>')
     out.append(f'<line x1="258" y1="312.5" x2="272" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
     out.append(f'<text x="276" y="316" class="ax">rbest ({rb_med:.1f}% med)</text>')
 
@@ -718,10 +718,10 @@ def build_figure5() -> None:
     out.append(f'<rect x="{px0}" y="{py0}" width="{x_par-px0:.1f}" height="{py1-py0}" fill="#e0f2fe" opacity="0.55"/>')
     out.append(f'<rect x="{x_par:.1f}" y="{py0}" width="{px1-x_par:.1f}" height="{py1-py0}" fill="#fef3c7" opacity="0.45"/>')
     out.append(f'<line x1="{x_par:.1f}" y1="{py0}" x2="{x_par:.1f}" y2="{py1}" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
-    out.append(f'<rect x="54" y="138" width="94" height="26" rx="3" fill="#ffffff"/>')
+    out.append('<rect x="54" y="138" width="94" height="26" rx="3" fill="#ffffff"/>')
     out.append(f'<text x="{(px0+x_par)/2:.1f}" y="149" text-anchor="middle" class="lbl" fill="{BLUE}">PAR (0–29.1M)</text>')
     out.append(f'<text x="{(px0+x_par)/2:.1f}" y="160" text-anchor="middle" class="ax" fill="{BLUE}">all 21-mers</text>')
-    out.append(f'<rect x="176" y="144" width="236" height="16" rx="3" fill="#ffffff"/>')
+    out.append('<rect x="176" y="144" width="236" height="16" rx="3" fill="#ffffff"/>')
     out.append(f'<text x="{(x_par+px1)/2:.1f}" y="155" text-anchor="middle" class="lbl" fill="{VERMILION}">MSY: Y-specific 21-mers (29.1–110.7 Mb)</text>')
 
     for fv in [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]:
@@ -746,9 +746,9 @@ def build_figure5() -> None:
     out.append(f'<polyline fill="none" stroke="{VERMILION}" stroke-width="2.4" points="{" ".join(f_pts)}"/>')
 
     out.append(f'<line x1="22" y1="303" x2="40" y2="303" stroke="{GREEN}" stroke-width="3"/>')
-    out.append(f'<text x="45" y="307" class="lbl">Male Y-carriers (BCMb 0.976, GRMa 0.984, KOMPb 0.987)</text>')
+    out.append('<text x="45" y="307" class="lbl">Male Y-carriers (BCMb 0.976, GRMa 0.984, KOMPb 0.987)</text>')
     out.append(f'<line x1="22" y1="319" x2="40" y2="319" stroke="{VERMILION}" stroke-width="3"/>')
-    out.append(f'<text x="45" y="323" class="lbl">Female XX (V3 3/3: cs10 0.071, EH23a/b ≤0.077 · P4 30/30 ≤0.320)</text>')
+    out.append('<text x="45" y="323" class="lbl">Female XX (V3 3/3: cs10 0.071, EH23a/b ≤0.077 · P4 30/30 ≤0.320)</text>')
 
     # Divider at x = 452
     out.append(f'<line x1="452" y1="12" x2="452" y2="{h-12}" stroke="{LINE}"/>')

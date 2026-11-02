@@ -16,5 +16,8 @@
   - `figures/chr7_25.022-31.033Mb_cbs_overview.png` & `figures/multiz_cbdas.png` — Live HighGen 228-stanza (219-assembly) UCSC Genome Browser Track Hub screenshots across the 6 Mb `cs10` chromosome 7 cannabinoid synthase super-cluster (`CBCAS` and `CBDAS` cassettes) and the `multiz217way` alignment track at functional `CBDAS` (`LOC115697762`).
   - `figures/figure4_tandem_clusters.svg` — 216-query `CBDAS` stratification (`79` intact `≥98.5%`, `77` B-locus pseudogenes `93.0–98.5%`, `6` aligned `<93.0%`, `54` `<50%` CDS pruned in `synNet`) and `netFilter -syn` pruning vs. `46.4%` pre-filter paralog interval reuse (`37.1%` at `≥50%` shared CDS).
   - `figures/figure5_panagram_kmer.svg` — Chromosome-wide `AH3Mb.chrY` (`0–110.7 Mb`) Panagram $k = 21$ pseudoautosomal (`0–29.08 Mb`) vs. male-specific Y (`205,619` Y-mers, males `0.976–0.987` vs. V3 females `≤0.077`) profile, 1 Mb window `rbest` chain correlation scatter on `GRMa` (`631` windows, `r = 0.8118`), and Tier P2 (`41/42` passing), TOGA2 v2.0.9 pilot, and 1,341-record phenotype ledger scorecards.
-- `build.py` — Renders `template.html` to `poster.pdf` (44 × 44 in) and `preview.png` via headless Chromium (`uv run --with playwright python build.py`).
+- `build.py` — Renders `template.html` to `cannabis-poster.pdf` (44 × 44 in) and `poster-preview.png` via headless Chromium (`uv run --with playwright python build.py`).
+- `cannabis-poster.pdf` & `poster-preview.png` — Rendered 44 × 44 in print PDF and thumbnail preview.
 - `galaxy-logo.svg`, `qr-hub.svg`, `qr-tools.svg`, `qr-repo.svg` — Vector logo and QR codes.
+
+![HighGen Poster Preview](poster-preview.png)

@@ -502,5 +502,5 @@
 <line x1="826.5" y1="307.0" x2="826.5" y2="323.0" stroke="#D55E00" stroke-width="1.4"/>
 <text x="842" y="318.5" class="ax mono">25 pcs</text>
 <rect x="462" y="352" width="424" height="26" rx="6" fill="#fff4d1" stroke="#f2b10f"/>
-<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs)</text>
+<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pcs, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs)</text>
 </svg>

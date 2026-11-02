@@ -248,16 +248,16 @@
 <text x="64" y="73" class="lbl" fill="#D55E00">Median synNet = 65.2% (rbest = 70.0%)</text>
 <text x="64" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>
 <text x="206.0" y="282" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>
-<rect x="14" y="292" width="9" height="9" rx="2" fill="#0072B2"/>
-<text x="26" y="300" class="ax">Salk HiFi phased (98)</text>
-<rect x="144" y="292" width="9" height="9" rx="2" fill="#E69F00"/>
-<text x="156" y="300" class="ax">Unphased/diploid (84)</text>
+<rect x="12" y="292" width="9" height="9" rx="2" fill="#0072B2"/>
+<text x="24" y="300" class="ax">Salk HiFi (98)</text>
+<rect x="148" y="292" width="9" height="9" rx="2" fill="#E69F00"/>
+<text x="160" y="300" class="ax">Unphased/dip (84)</text>
 <line x1="258" y1="296.5" x2="272" y2="296.5" stroke="#D55E00" stroke-width="1.8" stroke-dasharray="4,3"/>
 <text x="276" y="300" class="ax">Median (65.2%)</text>
-<rect x="14" y="308" width="9" height="9" rx="2" fill="#009E73"/>
-<text x="26" y="316" class="ax">T2T/GWH (7) &amp; other (17)</text>
-<rect x="144" y="308" width="9" height="9" rx="2" fill="#CC79A7"/>
-<text x="156" y="316" class="ax">Pike ONT (10)</text>
+<rect x="12" y="308" width="9" height="9" rx="2" fill="#009E73"/>
+<text x="24" y="316" class="ax">T2T (7) + other (17)</text>
+<rect x="148" y="308" width="9" height="9" rx="2" fill="#CC79A7"/>
+<text x="160" y="316" class="ax">Pike ONT (10)</text>
 <line x1="258" y1="312.5" x2="272" y2="312.5" stroke="#18243a" stroke-width="1.8" stroke-dasharray="3,2"/>
 <text x="276" y="316" class="ax">rbest (70.0% med)</text>
 <line x1="376" y1="12" x2="376" y2="318" stroke="#d5dbe5"/>

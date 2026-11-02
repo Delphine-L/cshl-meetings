@@ -213,7 +213,7 @@ def build_figure1() -> None:
         out.append(f'<text x="842" y="{yy+10}" class="ax mono">{n_pieces} pcs</text>')
 
     out.append(f'<rect x="462" y="352" width="424" height="26" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append('<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs)</text>')
+    out.append('<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pcs, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure1_architecture.svg").write_text("\n".join(out))
@@ -388,16 +388,16 @@ def build_figure2() -> None:
 
     # Two-row legend under Panel B (strictly inside [278, 610])
     out.append(f'<rect x="278" y="286" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append('<text x="290" y="294" class="ax">40–0 Dominant (7 arms, 2 loci, 28/70)</text>')
-    out.append(f'<rect x="478" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append('<text x="490" y="294" class="ax">Crossing win (39/70)</text>')
+    out.append('<text x="290" y="294" class="ax">40–0 Dom (7 arms, 2 loci, 28/70)</text>')
+    out.append(f'<rect x="484" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
+    out.append('<text x="496" y="294" class="ax">Crossing win (39/70)</text>')
 
     out.append(f'<rect x="278" y="303" width="9" height="9" rx="2" fill="{GOLD}"/>')
     out.append('<text x="290" y="311" class="ax">Split (1/70)</text>')
     out.append(f'<rect x="356" y="303" width="9" height="9" rx="2" fill="{VERMILION}"/>')
     out.append('<text x="368" y="311" class="ax">Loss (1 locus, 2/70)</text>')
-    out.append('<rect x="478" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
-    out.append('<text x="490" y="311" class="ax">Ineligible (&lt;500 kb)</text>')
+    out.append('<rect x="484" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
+    out.append('<text x="496" y="311" class="ax">Ineligible (&lt;500 kb)</text>')
 
     # Divider 2 at x = 618
     out.append(f'<line x1="618" y1="12" x2="618" y2="{h-12}" stroke="{LINE}"/>')
@@ -523,18 +523,18 @@ def build_figure3() -> None:
     out.append(f'<text x="{wx0+12}" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
     out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>')
 
-    # 2x3 legend for Panel A: 4 bar classes in cols 1-2 + 2 dashed lines in col 3 (strictly inside [14, 368])
-    out.append(f'<rect x="14" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append('<text x="26" y="300" class="ax">Salk HiFi phased (98)</text>')
-    out.append(f'<rect x="144" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
-    out.append('<text x="156" y="300" class="ax">Unphased/diploid (84)</text>')
+    # 2x3 legend for Panel A: 4 bar classes in cols 1-2 + 2 dashed lines in col 3 (strictly inside [12, 368])
+    out.append(f'<rect x="12" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
+    out.append('<text x="24" y="300" class="ax">Salk HiFi (98)</text>')
+    out.append(f'<rect x="148" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
+    out.append('<text x="160" y="300" class="ax">Unphased/dip (84)</text>')
     out.append(f'<line x1="258" y1="296.5" x2="272" y2="296.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
     out.append(f'<text x="276" y="300" class="ax">Median ({syn_med:.1f}%)</text>')
 
-    out.append(f'<rect x="14" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append('<text x="26" y="316" class="ax">T2T/GWH (7) &amp; other (17)</text>')
-    out.append(f'<rect x="144" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
-    out.append('<text x="156" y="316" class="ax">Pike ONT (10)</text>')
+    out.append(f'<rect x="12" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
+    out.append('<text x="24" y="316" class="ax">T2T (7) + other (17)</text>')
+    out.append(f'<rect x="148" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
+    out.append('<text x="160" y="316" class="ax">Pike ONT (10)</text>')
     out.append(f'<line x1="258" y1="312.5" x2="272" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
     out.append(f'<text x="276" y="316" class="ax">rbest ({rb_med:.1f}% med)</text>')
 
@@ -853,10 +853,67 @@ def build_figure5() -> None:
     (OUT_DIR / "figure5_panagram_kmer.svg").write_text("\n".join(out))
 
 
+# ==============================================================================
+# KMER BANDS (k = 21 Multiplicity-Weighted Occurrence Spectrum across 12 Genomes)
+# ==============================================================================
+def build_kmer_bands() -> None:
+    w, h = 900, 232
+    out = svg_header(w, h)
+    out.append('<text x="16" y="22" class="title">Meryl k = 21 Occurrence Spectrum (Multiplicity-Weighted Across 12 Representative Assemblies)</text>')
+
+    rows = [
+        ("Salk_SRIb", [42.09, 7.17, 11.84, 15.33, 23.58], ["42%", "7%", "12%", "15%", "24%"]),
+        ("Salk_SRIa", [42.07, 7.00, 11.80, 15.19, 23.93], ["42%", "7%", "12%", "15%", "24%"]),
+        ("cs10_RefSeq", [39.62, 8.36, 12.58, 14.81, 24.62], ["40%", "8%", "13%", "15%", "24%"]),
+        ("Salk_HAWb", [38.61, 6.99, 11.81, 15.78, 26.81], ["38%", "7%", "12%", "16%", "27%"]),
+        ("Salk_HAWa", [38.00, 7.17, 11.88, 15.81, 27.13], ["38%", "7%", "12%", "16%", "27%"]),
+        ("Salk_TRCa", [37.25, 7.00, 11.75, 15.99, 28.03], ["37%", "7%", "12%", "16%", "28%"]),
+        ("Salk_TRCb", [36.96, 7.25, 11.88, 15.91, 28.00], ["37%", "7%", "12%", "16%", "28%"]),
+        ("Salk_ANCb", [36.64, 7.70, 11.86, 15.91, 27.90], ["36%", "8%", "12%", "16%", "28%"]),
+        ("Salk_ANCa", [35.86, 7.83, 11.91, 16.09, 28.30], ["36%", "8%", "12%", "16%", "28%"]),
+        ("T2T_42815.1", [35.33, 5.64, 10.57, 14.77, 33.70], ["35%", "6%", "10%", "15%", "34%"]),
+        ("T2T_42775.1", [35.12, 5.58, 10.57, 14.77, 33.97], ["35%", "6%", "10%", "15%", "34%"]),
+        ("Cannbio2_dip", [26.41, 17.38, 13.17, 15.22, 27.81], ["27%", "17%", "13%", "15%", "28%"]),
+    ]
+    cols = [BLUE, VERMILION, GREEN, ORANGE, PURPLE]
+
+    for idx, (name, pcts, lbls) in enumerate(rows):
+        col_idx = 0 if idx < 6 else 1
+        row_idx = idx % 6
+        x_base = 108.0 if col_idx == 0 else 552.0
+        bar_tot_w = 328.0
+        yy = 36.0 + row_idx * 26.0
+        out.append(f'<text x="{x_base-6:.1f}" y="{yy+13.5:.1f}" text-anchor="end" class="lbl">{esc(name)}</text>')
+        cur_x = x_base
+        for b_idx, (p, ltxt) in enumerate(zip(pcts, lbls, strict=True)):
+            bw = (p / 100.0) * bar_tot_w
+            out.append(f'<rect x="{cur_x:.1f}" y="{yy:.1f}" width="{bw:.1f}" height="19" fill="{cols[b_idx]}" stroke="#ffffff" stroke-width="0.6"/>')
+            if bw >= 18.0:
+                out.append(f'<text x="{cur_x + bw/2:.1f}" y="{yy+13:.1f}" text-anchor="middle" class="ax" fill="#ffffff" font-weight="700">{ltxt}</text>')
+            cur_x += bw
+
+    out.append(f'<line x1="448" y1="34" x2="448" y2="190" stroke="{LINE}"/>')
+
+    leg = [
+        ("1× (unique)", BLUE, 180),
+        ("2× (allelic/dup)", VERMILION, 295),
+        ("3–10×", GREEN, 430),
+        ("11–100×", ORANGE, 515),
+        ("&gt;100× (high-copy LTR)", PURPLE, 610),
+    ]
+    for ltxt, col, lx in leg:
+        out.append(f'<rect x="{lx}" y="205" width="11" height="11" rx="2" fill="{col}"/>')
+        out.append(f'<text x="{lx+15}" y="214" class="lbl">{ltxt}</text>')
+
+    out.append("</svg>")
+    (OUT_DIR / "kmer_bands_k21.svg").write_text("\n".join(out))
+
+
 if __name__ == "__main__":
     build_figure1()
     build_figure2()
     build_figure3()
     build_figure4()
     build_figure5()
-    print("Generated all 5 data-dense poster SVG figures in", OUT_DIR)
+    build_kmer_bands()
+    print("Generated all 6 data-dense poster SVG figures in", OUT_DIR)

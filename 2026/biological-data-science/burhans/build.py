@@ -25,9 +25,9 @@ def main() -> None:
         page.goto(out_html.as_uri(), wait_until="networkidle")
         page.evaluate("document.fonts.ready")
         overflow = page.evaluate(
-            f"""() => [...document.querySelectorAll('section, header, footer, main')]
+            f"""() => [...document.querySelectorAll('section, .col, header, footer, main')]
                 .filter(e => e.scrollHeight > e.clientHeight + 2 || e.getBoundingClientRect().bottom > {PAGE_PX})
-                .map(e => (e.querySelector('h2')?.innerText || e.tagName) + ' ' + e.scrollHeight + '/' + e.clientHeight)"""
+                .map(e => (e.querySelector('h2')?.innerText || e.className || e.tagName) + ' ' + e.scrollHeight + '/' + e.clientHeight)"""
         )
         print("overflow:", overflow or "none")
         page.screenshot(path=str(png))

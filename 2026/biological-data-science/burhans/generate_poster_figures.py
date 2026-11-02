@@ -555,7 +555,7 @@ def build_figure3() -> None:
         288,
         "B",
         "Chunked LASTZ & Collection Purge",
-        "≤50,000-segment chunks (7.8× speedup) & −56.6% disk",
+        "≤50,000-segment chunks (7.8× speedup) & −56.5% disk",
     )
     bx0 = 20
     out.append(f'<text x="{bx0}" y="334" class="lbl">EH23a × EH23b Gapped Extension (100 chr-pair jobs)</text>')
@@ -568,7 +568,7 @@ def build_figure3() -> None:
     out.append(f'<rect x="{bx0}" y="412" width="380" height="20" rx="4" fill="{GREY}"/>')
     out.append(f'<text x="{bx0+8}" y="426" class="ax mono" fill="#ffffff" font-weight="700">Unpurged: 14.96 TB (68.6 GB/run)</text>')
     out.append(f'<rect x="{bx0}" y="436" width="165.1" height="20" rx="4" fill="{BLUE}"/>')
-    out.append(f'<text x="{bx0+172}" y="450" class="lbl mono" fill="{BLUE}">6.50 TB (−56.6%, 8.46 TB saved)</text>')
+    out.append(f'<text x="{bx0+172}" y="450" class="lbl mono" fill="{BLUE}">6.50 TB (−56.5%, 8.45 TB saved)</text>')
 
     out.append(f'<rect x="{bx0}" y="468" width="414" height="78" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
     out.append(f'<text x="{bx0+10}" y="486" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>')
@@ -586,26 +586,26 @@ def build_figure3() -> None:
         288,
         "C",
         "Streaming 64-Bit MULTIZ 11.4",
-        "52.1× RAM cut, 32.8× block DP, & 6.5× piece speedup",
+        "51.7× RAM cut, 33.8× block DP, & 6.5× piece speedup",
     )
     cx0 = 466
     out.append(f'<text x="{cx0}" y="334" class="lbl">Peak RAM (hg38 5-way chrX / 217-way Cannabis)</text>')
     out.append(f'<rect x="{cx0}" y="340" width="380" height="19" rx="4" fill="{VERMILION}"/>')
     out.append(f'<text x="{cx0+8}" y="353" class="ax mono" fill="#ffffff" font-weight="700">Buffered MAF (v11.2): 677 MiB</text>')
     out.append(f'<rect x="{cx0}" y="362" width="8.0" height="19" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+15}" y="375" class="lbl mono" fill="{GREEN}">13 MiB (v11.3, 52.1×, worker ≤14.1 MB)</text>')
+    out.append(f'<text x="{cx0+15}" y="375" class="lbl mono" fill="{GREEN}">13 MiB (v11.3, 51.7×, worker ≤14.1 MB)</text>')
 
-    out.append(f'<text x="{cx0}" y="400" class="lbl">Deep 217-Way Block Merge (mz_yama.c, NC_044372.1.24)</text>')
+    out.append(f'<text x="{cx0}" y="400" class="lbl">Deep Block Merge in a 216-Genome Roast (mz_yama.c)</text>')
     out.append(f'<rect x="{cx0}" y="406" width="380" height="19" rx="4" fill="{ORANGE}"/>')
-    out.append(f'<text x="{cx0+8}" y="419" class="ax mono" fill="#ffffff" font-weight="700">Pairwise row×row DP: 953 s</text>')
-    out.append(f'<rect x="{cx0}" y="428" width="11.6" height="19" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="{cx0+18}" y="441" class="lbl mono" fill="{BLUE}">5×5 column-count DP: 29 s (32.8×)</text>')
+    out.append(f'<text x="{cx0+8}" y="419" class="ax mono" fill="#ffffff" font-weight="700">Pairwise row×row DP: 981 s</text>')
+    out.append(f'<rect x="{cx0}" y="428" width="{380 * 29 / 981:.1f}" height="19" rx="2" fill="{BLUE}"/>')
+    out.append(f'<text x="{cx0+18}" y="441" class="lbl mono" fill="{BLUE}">5×5 column-count DP: 29 s (33.8×)</text>')
 
-    out.append(f'<text x="{cx0}" y="466" class="lbl">Single 5 Mb Piece Runtime (multiz#28)</text>')
+    out.append(f'<text x="{cx0}" y="466" class="lbl">Single 4.1 Mb Piece Runtime (multiz#28)</text>')
     out.append(f'<rect x="{cx0}" y="472" width="380" height="19" rx="4" fill="{GREY}"/>')
-    out.append(f'<text x="{cx0+8}" y="485" class="ax mono" fill="#ffffff" font-weight="700">Baseline piece merge: 26.8 core-h</text>')
+    out.append(f'<text x="{cx0+8}" y="485" class="ax mono" fill="#ffffff" font-weight="700">Baseline 4.1 Mb piece: 7.3 h</text>')
     out.append(f'<rect x="{cx0}" y="494" width="58.1" height="19" rx="3" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+65}" y="507" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, col-count DP)</text>')
+    out.append(f'<text x="{cx0+65}" y="507" class="lbl mono" fill="{GREEN}">1.1 h (6.5×, col-count DP)</text>')
 
     out.append(f'<rect x="{cx0}" y="518" width="414" height="28" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
     out.append(f'<text x="{cx0+207}" y="536" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t blocks)</text>')

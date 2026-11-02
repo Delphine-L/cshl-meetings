@@ -856,7 +856,7 @@ def build_figure5() -> None:
 # KMER BANDS (k = 21 Multiplicity-Weighted Occurrence Spectrum across 12 Genomes)
 # ==============================================================================
 def build_kmer_bands() -> None:
-    w, h = 900, 232
+    w, h = 900, 410
     out = svg_header(w, h)
     out.append('<text x="16" y="22" class="title">Meryl k = 21 Occurrence Spectrum (Multiplicity-Weighted Across 12 Representative Assemblies)</text>')
 
@@ -876,22 +876,18 @@ def build_kmer_bands() -> None:
     ]
     cols = [BLUE, VERMILION, GREEN, ORANGE, PURPLE]
 
+    x_base = 114.0
+    bar_tot_w = 766.0
     for idx, (name, pcts, lbls) in enumerate(rows):
-        col_idx = 0 if idx < 6 else 1
-        row_idx = idx % 6
-        x_base = 108.0 if col_idx == 0 else 552.0
-        bar_tot_w = 328.0
-        yy = 36.0 + row_idx * 26.0
-        out.append(f'<text x="{x_base-6:.1f}" y="{yy+13.5:.1f}" text-anchor="end" class="lbl">{esc(name)}</text>')
+        yy = 38.0 + idx * 28.0
+        out.append(f'<text x="{x_base-8:.1f}" y="{yy+14.5:.1f}" text-anchor="end" class="lbl">{esc(name)}</text>')
         cur_x = x_base
         for b_idx, (p, ltxt) in enumerate(zip(pcts, lbls, strict=True)):
             bw = (p / 100.0) * bar_tot_w
-            out.append(f'<rect x="{cur_x:.1f}" y="{yy:.1f}" width="{bw:.1f}" height="19" fill="{cols[b_idx]}" stroke="#ffffff" stroke-width="0.6"/>')
+            out.append(f'<rect x="{cur_x:.1f}" y="{yy:.1f}" width="{bw:.1f}" height="21" fill="{cols[b_idx]}" stroke="#ffffff" stroke-width="0.6"/>')
             if bw >= 18.0:
-                out.append(f'<text x="{cur_x + bw/2:.1f}" y="{yy+13:.1f}" text-anchor="middle" class="ax" fill="#ffffff" font-weight="700">{ltxt}</text>')
+                out.append(f'<text x="{cur_x + bw/2:.1f}" y="{yy+14:.1f}" text-anchor="middle" class="ax" fill="#ffffff" font-weight="700">{ltxt}</text>')
             cur_x += bw
-
-    out.append(f'<line x1="448" y1="34" x2="448" y2="190" stroke="{LINE}"/>')
 
     leg = [
         ("1× (unique)", BLUE, 180),
@@ -901,8 +897,8 @@ def build_kmer_bands() -> None:
         ("&gt;100× (high-copy LTR)", PURPLE, 610),
     ]
     for ltxt, col, lx in leg:
-        out.append(f'<rect x="{lx}" y="205" width="11" height="11" rx="2" fill="{col}"/>')
-        out.append(f'<text x="{lx+15}" y="214" class="lbl">{ltxt}</text>')
+        out.append(f'<rect x="{lx}" y="384" width="11" height="11" rx="2" fill="{col}"/>')
+        out.append(f'<text x="{lx+15}" y="393" class="lbl">{ltxt}</text>')
 
     out.append("</svg>")
     (OUT_DIR / "kmer_bands_k21.svg").write_text("\n".join(out))

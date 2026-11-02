@@ -1,0 +1,123 @@
+{
+ "run": "dengueseq-denv3-galaxy",
+ "pipeline": "workflow-brief-to-galaxy",
+ "started": "2026-10-20T22:11:22Z",
+ "finished": "2026-10-21T00:34:52Z",
+ "run_head": "6737777",
+ "cast": {
+  "skill": "discover-shed-tool",
+  "foundry": "eb2de3f1",
+  "revision": 5,
+  "hash": "05c99cba",
+  "cast_at": "2026-09-13",
+  "refs": 5,
+  "upfront": 1,
+  "verify_file": "galaxy-tool-pin.json",
+  "verify_schema": "c0940fc0",
+  "signed": "foundry-build cast"
+ },
+ "pinned": {
+  "pins": [
+   {
+    "step": "map_reads",
+    "owner": "devteam",
+    "repo": "bwa",
+    "tool": "bwa_mem",
+    "version": "0.7.19+galaxy1",
+    "changeset": "c598cbb8b019"
+   },
+   {
+    "step": "filter_mapped_primary",
+    "owner": "iuc",
+    "repo": "samtools_view",
+    "tool": "samtools_view",
+    "version": "1.22+galaxy2",
+    "changeset": "5cf9fcc93508"
+   },
+   {
+    "step": "primer_trim",
+    "owner": "iuc",
+    "repo": "ivar_trim",
+    "tool": "ivar_trim",
+    "version": "1.4.4+galaxy1",
+    "changeset": "6606a8c97889"
+   },
+   {
+    "step": "consensus",
+    "owner": "iuc",
+    "repo": "ivar_consensus",
+    "tool": "ivar_consensus",
+    "version": "1.4.4+galaxy0",
+    "changeset": "1c5448133894"
+   },
+   {
+    "step": "consensus_header",
+    "owner": "bgruening",
+    "repo": "text_processing",
+    "tool": "tp_sed_tool",
+    "version": "9.11+galaxy0",
+    "changeset": "30b60202d990"
+   },
+   {
+    "step": "variants",
+    "owner": "iuc",
+    "repo": "ivar_variants",
+    "tool": "ivar_variants",
+    "version": "1.4.4+galaxy0",
+    "changeset": "5e5dfc9e71e2"
+   },
+   {
+    "step": "per_base_depth",
+    "owner": "iuc",
+    "repo": "bedtools",
+    "tool": "bedtools_genomecoveragebed",
+    "version": "2.31.1+galaxy0",
+    "changeset": "d57471728f7b"
+   }
+  ],
+  "from": "22:51",
+  "to": "23:39",
+  "date": "2026-10-20",
+  "signed": "gxwf tool-revisions"
+ },
+ "validated": {
+  "cli": "1.15.0",
+  "replayed": "2026-10-30",
+  "run_cli": "1.14.0",
+  "at": "00:00",
+  "command": "gxwf validate --connections --strict --json",
+  "tool_state": {
+   "ok": 7,
+   "fail": 0,
+   "skip": 0
+  },
+  "connections": {
+   "ok": 12,
+   "invalid": 0,
+   "skip": 0
+  },
+  "map_over_list": 7,
+  "tool_steps": 7,
+  "wall_min": 0.58,
+  "wall_max": 0.59,
+  "signed": "gxwf validate"
+ },
+ "tested": {
+  "planemo": "0.75.47",
+  "at": "00:33",
+  "summary": {
+   "num_errors": 0,
+   "num_failures": 0,
+   "num_skips": 0,
+   "num_tests": 1
+  },
+  "status": "success",
+  "jobs": 7,
+  "jobs_ok": 7,
+  "installed": 7,
+  "containers": 6,
+  "minutes": 11,
+  "tests_not_run": 1,
+  "signed": "planemo test"
+ }
+}

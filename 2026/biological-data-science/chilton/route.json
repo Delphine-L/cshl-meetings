@@ -1,0 +1,86 @@
+{
+ "foundry": "eb2de3f1",
+ "lanes": {
+  "paper": [
+   {
+    "mold": "summarize-paper",
+    "loop": false
+   },
+   {
+    "mold": "freeform-summary-to-workflow-brief",
+    "loop": false
+   }
+  ],
+  "nextflow": [
+   {
+    "mold": "summarize-nextflow",
+    "loop": false
+   },
+   {
+    "mold": "nextflow-summary-to-workflow-brief",
+    "loop": false
+   }
+  ]
+ },
+ "spine": [
+  {
+   "mold": "workflow-brief-to-galaxy-interface",
+   "loop": false
+  },
+  {
+   "mold": "workflow-brief-to-galaxy-data-flow",
+   "loop": false
+  },
+  {
+   "mold": "compare-against-iwc-exemplar",
+   "loop": false
+  },
+  {
+   "mold": "workflow-brief-to-galaxy-template",
+   "loop": false
+  },
+  {
+   "mold": "advance-galaxy-draft-step",
+   "loop": true
+  },
+  {
+   "branch": "test-data-resolution",
+   "chain": [
+    "find-test-data",
+    "user-supplied"
+   ]
+  },
+  {
+   "mold": "workflow-brief-to-galaxy-test-plan",
+   "loop": false
+  },
+  {
+   "mold": "implement-galaxy-workflow-test",
+   "loop": false
+  },
+  {
+   "mold": "validate-galaxy-workflow",
+   "loop": false
+  },
+  {
+   "mold": "run-workflow-test",
+   "loop": false
+  },
+  {
+   "mold": "debug-galaxy-workflow-output",
+   "loop": false
+  }
+ ],
+ "ledger": {
+  "entries": 19,
+  "resolved": 14,
+  "open": 5
+ },
+ "run": {
+  "slug": "dengueseq-denv3-galaxy",
+  "loop_phase": 5,
+  "loop_iterations": 7,
+  "validate_phase": 9,
+  "test_phase": 10
+ }
+}

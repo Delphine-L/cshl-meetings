@@ -1,0 +1,11 @@
+{
+  "border": 4,
+  "qr-foundry": {
+    "url": "https://galaxyproject.github.io/foundry/",
+    "modules": 29
+  },
+  "qr-preprint": {
+    "url": "https://doi.org/10.64898/2026.10.26.761864",
+    "modules": 29
+  }
+}

@@ -456,7 +456,7 @@ def build_figure2() -> None:
 # FIGURE 3: 216-Query Coverage Waterfall + LASTZ Chunking + MULTIZ 11.4 Scaling
 # ==============================================================================
 def build_figure3() -> None:
-    w, h = 900, 330
+    w, h = 900, 560
     out = svg_header(w, h)
 
     q_rows = []
@@ -474,18 +474,18 @@ def build_figure3() -> None:
     syn_med = statistics.median(r[2] for r in q_rows)
     rb_med = statistics.median(r[3] for r in q_rows)
 
-    # Panel A (x in [12, 368], divider 1 at x = 376)
+    # Top Tier: Panel A full-width (x in [14, 886], y in [10, 274])
     panel_badge(
         out,
-        12,
+        14,
         10,
         "A",
-        "216-Query Coverage Across cs10",
-        f"Median {syn_med:.1f}% synNet ({rb_med:.1f}% rbest), range 12.2–85.1%",
+        "216-Query Syntenic (synNet) and Reciprocal-Best (rbest) Coverage Across cs10",
+        f"Median {syn_med:.1f}% synNet ({rb_med:.1f}% rbest, range 29.3–88.1%), Chemdog91 (12.2%) to ACDC (85.1%)",
     )
 
-    wx0, wx1 = 52, 360
-    wy0, wy1 = 56, 266
+    wx0, wx1 = 54, 880
+    wy0, wy1 = 48, 228
 
     def y_cov(pct: float) -> float:
         return wy1 - (pct / 100.0) * (wy1 - wy0)
@@ -494,14 +494,14 @@ def build_figure3() -> None:
         yy = y_cov(pct)
         out.append(f'<line x1="{wx0}" y1="{yy:.1f}" x2="{wx1}" y2="{yy:.1f}" stroke="{LINE}" stroke-dasharray="2,2"/>')
         out.append(f'<text x="{wx0-5}" y="{yy+3:.1f}" text-anchor="end" class="ax">{pct}%</text>')
-    out.append(f'<text x="16" y="{(wy0+wy1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 16 {(wy0+wy1)/2:.1f})">cs10 non-N coverage (%)</text>')
+    out.append(f'<text x="18" y="{(wy0+wy1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 18 {(wy0+wy1)/2:.1f})">cs10 non-N coverage (%)</text>')
 
     n_q = len(q_rows)
     bar_step = (wx1 - wx0) / float(n_q)
     rbest_pts = []
     for idx, (_lbl, aclass, syn_p, rb_p) in enumerate(q_rows):
         xx = wx0 + idx * bar_step
-        rbest_pts.append(f"{xx:.1f},{y_cov(rb_p):.1f}")
+        rbest_pts.append(f"{xx+1.4:.1f},{y_cov(rb_p):.1f}")
         if "Salk HiFi" in aclass:
             col = BLUE
         elif "unphased/diploid" in aclass:
@@ -510,98 +510,97 @@ def build_figure3() -> None:
             col = PURPLE
         else:
             col = GREEN
-        out.append(f'<rect x="{xx-0.55:.2f}" y="{y_cov(syn_p):.1f}" width="1.15" height="{wy1-y_cov(syn_p):.1f}" fill="{col}" opacity="0.88"/>')
+        out.append(f'<rect x="{xx:.2f}" y="{y_cov(syn_p):.1f}" width="2.85" height="{wy1-y_cov(syn_p):.1f}" fill="{col}" opacity="0.88"/>')
 
-    out.append(f'<polyline fill="none" stroke="{INK}" stroke-width="1.5" stroke-dasharray="3,2" points="{" ".join(rbest_pts)}"/>')
+    out.append(f'<polyline fill="none" stroke="{INK}" stroke-width="1.6" stroke-dasharray="3,2" points="{" ".join(rbest_pts)}"/>')
 
     ymed = y_cov(syn_med)
-    out.append(f'<line x1="{wx0}" y1="{ymed:.1f}" x2="{wx1}" y2="{ymed:.1f}" stroke="{VERMILION}" stroke-width="1.5" stroke-dasharray="4,3"/>')
+    out.append(f'<line x1="{wx0}" y1="{ymed:.1f}" x2="{wx1}" y2="{ymed:.1f}" stroke="{VERMILION}" stroke-width="1.6" stroke-dasharray="4,3"/>')
 
-    # Summary callout placed in the open upper-left whitespace (y in [60, 94], strictly above all bars and rbest points)
-    out.append(f'<rect x="{wx0+6}" y="60" width="212" height="32" rx="4" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<text x="{wx0+12}" y="73" class="lbl" fill="{VERMILION}">Median synNet = {syn_med:.1f}% (rbest = {rb_med:.1f}%)</text>')
-    out.append(f'<text x="{wx0+12}" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
-    out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>')
+    # Summary callout placed in the open upper-left whitespace (y in [52, 84], strictly above all bars and rbest points)
+    out.append(f'<rect x="{wx0+8}" y="52" width="248" height="32" rx="4" fill="#ffffff" stroke="{LINE}"/>')
+    out.append(f'<text x="{wx0+15}" y="65" class="lbl" fill="{VERMILION}">Median synNet = {syn_med:.1f}% (rbest = {rb_med:.1f}%)</text>')
+    out.append(f'<text x="{wx0+15}" y="79" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
+    out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 query assemblies sorted by cs10 synNet coverage</text>')
 
-    # 2x3 legend for Panel A: 4 bar classes in cols 1-2 + 2 dashed lines in col 3 (strictly inside [12, 368])
-    out.append(f'<rect x="12" y="292" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append('<text x="24" y="300" class="ax">Salk HiFi (98)</text>')
-    out.append(f'<rect x="148" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
-    out.append('<text x="160" y="300" class="ax">Unphased/dip (84)</text>')
-    out.append(f'<line x1="258" y1="296.5" x2="272" y2="296.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
-    out.append(f'<text x="276" y="300" class="ax">Median ({syn_med:.1f}%)</text>')
+    # Single horizontal legend row for Panel A at y = 256..268 across x in [18, 886]
+    out.append(f'<rect x="18" y="256" width="9" height="9" rx="2" fill="{BLUE}"/>')
+    out.append('<text x="30" y="264" class="ax">Salk HiFi phased (98)</text>')
+    out.append(f'<rect x="172" y="256" width="9" height="9" rx="2" fill="{ORANGE}"/>')
+    out.append('<text x="184" y="264" class="ax">Unphased/diploid (84)</text>')
+    out.append(f'<rect x="330" y="256" width="9" height="9" rx="2" fill="{GREEN}"/>')
+    out.append('<text x="342" y="264" class="ax">T2T/GWH (7) &amp; other (17)</text>')
+    out.append(f'<rect x="510" y="256" width="9" height="9" rx="2" fill="{PURPLE}"/>')
+    out.append('<text x="522" y="264" class="ax">Pike ONT (10)</text>')
+    out.append(f'<line x1="622" y1="260.5" x2="638" y2="260.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
+    out.append(f'<text x="642" y="264" class="ax">Median ({syn_med:.1f}%)</text>')
+    out.append(f'<line x1="752" y1="260.5" x2="768" y2="260.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
+    out.append(f'<text x="772" y="264" class="ax">rbest ({rb_med:.1f}% med)</text>')
 
-    out.append(f'<rect x="12" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append('<text x="24" y="316" class="ax">T2T (7) + other (17)</text>')
-    out.append(f'<rect x="148" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
-    out.append('<text x="160" y="316" class="ax">Pike ONT (10)</text>')
-    out.append(f'<line x1="258" y1="312.5" x2="272" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
-    out.append(f'<text x="276" y="316" class="ax">rbest ({rb_med:.1f}% med)</text>')
+    # Horizontal divider between Top Tier (Panel A) and Bottom Tier (Panels B & C)
+    out.append(f'<line x1="14" y1="278" x2="886" y2="278" stroke="{LINE}" stroke-width="1.5"/>')
 
-    # Divider 1 at x = 376
-    out.append(f'<line x1="376" y1="12" x2="376" y2="{h-12}" stroke="{LINE}"/>')
-
-    # Panel B (x in [386, 622], divider 2 at x = 630)
+    # Bottom-Left: Panel B (x in [14, 438], vertical divider at x = 448)
     panel_badge(
         out,
-        386,
-        10,
+        14,
+        288,
         "B",
-        "Chunked LASTZ & Purge",
-        "≤50k chunks (7.8×) & −56.6% disk",
+        "Chunked LASTZ & Collection Purge",
+        "≤50,000-segment chunks (7.8× speedup) & −56.6% disk",
     )
-    bx0 = 394
-    out.append(f'<text x="{bx0}" y="66" class="lbl">EH23a × EH23b Extension (slot-h)</text>')
-    out.append(f'<rect x="{bx0}" y="74" width="218" height="21" rx="4" fill="{VERMILION}"/>')
-    out.append(f'<text x="{bx0+6}" y="88" class="ax mono" fill="#ffffff" font-weight="700">Whole-chr: 389.0 slot-h</text>')
-    out.append(f'<rect x="{bx0}" y="100" width="28.0" height="21" rx="4" fill="{GREEN}"/>')
-    out.append(f'<text x="{bx0+34}" y="114" class="lbl mono" fill="{GREEN}">49.8 slot-h (7.8×, 1.88 h)</text>')
+    bx0 = 20
+    out.append(f'<text x="{bx0}" y="334" class="lbl">EH23a × EH23b Gapped Extension (100 chr-pair jobs)</text>')
+    out.append(f'<rect x="{bx0}" y="340" width="380" height="20" rx="4" fill="{VERMILION}"/>')
+    out.append(f'<text x="{bx0+8}" y="354" class="ax mono" fill="#ffffff" font-weight="700">Whole-chr extension: 389.0 allocated slot-h</text>')
+    out.append(f'<rect x="{bx0}" y="364" width="48.6" height="20" rx="4" fill="{GREEN}"/>')
+    out.append(f'<text x="{bx0+55}" y="378" class="lbl mono" fill="{GREEN}">49.8 slot-h (7.8× speedup, 1.88 h wall-clock)</text>')
 
-    out.append(f'<text x="{bx0}" y="148" class="lbl">218-Run Storage (54,554 jobs)</text>')
-    out.append(f'<rect x="{bx0}" y="156" width="218" height="21" rx="4" fill="{GREY}"/>')
-    out.append(f'<text x="{bx0+6}" y="170" class="ax mono" fill="#ffffff" font-weight="700">Unpurged: 14.96 TB</text>')
-    out.append(f'<rect x="{bx0}" y="182" width="94.7" height="21" rx="4" fill="{BLUE}"/>')
-    out.append(f'<text x="{bx0+100}" y="196" class="lbl mono" fill="{BLUE}">6.50 TB (−56.6%)</text>')
+    out.append(f'<text x="{bx0}" y="406" class="lbl">218-Run Galaxy History Storage (54,554 jobs)</text>')
+    out.append(f'<rect x="{bx0}" y="412" width="380" height="20" rx="4" fill="{GREY}"/>')
+    out.append(f'<text x="{bx0+8}" y="426" class="ax mono" fill="#ffffff" font-weight="700">Unpurged: 14.96 TB (68.6 GB/run)</text>')
+    out.append(f'<rect x="{bx0}" y="436" width="165.1" height="20" rx="4" fill="{BLUE}"/>')
+    out.append(f'<text x="{bx0+172}" y="450" class="lbl mono" fill="{BLUE}">6.50 TB (−56.6%, 8.46 TB saved)</text>')
 
-    out.append(f'<rect x="{bx0}" y="220" width="222" height="94" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
-    out.append(f'<text x="{bx0+10}" y="239" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>')
-    out.append(f'<text x="{bx0+10}" y="257" class="ax">• 99.99% hg38×panTro6 chr21 chains</text>')
-    out.append(f'<text x="{bx0+10}" y="275" class="ax">• EH23a×b: med 28 min/job, &lt;3.97 GB</text>')
-    out.append(f'<text x="{bx0+10}" y="293" class="ax">• Byte-identical doRecipBest chains (5)</text>')
+    out.append(f'<rect x="{bx0}" y="468" width="414" height="78" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
+    out.append(f'<text x="{bx0+10}" y="486" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>')
+    out.append(f'<text x="{bx0+10}" y="504" class="ax">• 99.99% hg38×panTro6 chr21 chains (56.8 vs 102.4 min)</text>')
+    out.append(f'<text x="{bx0+10}" y="521" class="ax">• EH23a×b: med 28 min/job (max 49 vs 660 min), RAM &lt; 3.97 GB</text>')
+    out.append(f'<text x="{bx0+10}" y="538" class="ax">• Byte-identical doRecipBest chains across 5 test queries</text>')
 
-    # Divider 2 at x = 630
-    out.append(f'<line x1="630" y1="12" x2="630" y2="{h-12}" stroke="{LINE}"/>')
+    # Vertical divider between Panel B and Panel C
+    out.append(f'<line x1="448" y1="288" x2="448" y2="{h-12}" stroke="{LINE}" stroke-width="1.5"/>')
 
-    # Panel C (x in [640, 888])
+    # Bottom-Right: Panel C (x in [460, 886])
     panel_badge(
         out,
-        640,
-        10,
+        460,
+        288,
         "C",
-        "Streaming MULTIZ 11.4",
-        "52.1× RAM cut & 32.8× DP speedup",
+        "Streaming 64-Bit MULTIZ 11.4",
+        "52.1× RAM cut, 32.8× block DP, & 6.5× piece speedup",
     )
-    cx0 = 646
-    out.append(f'<text x="{cx0}" y="66" class="lbl">Peak RAM (hg38 5-way / 217-way)</text>')
-    out.append(f'<rect x="{cx0}" y="74" width="220" height="20" rx="4" fill="{VERMILION}"/>')
-    out.append(f'<text x="{cx0+6}" y="88" class="ax mono" fill="#ffffff" font-weight="700">Buffered MAF (v11.2): 677 MiB</text>')
-    out.append(f'<rect x="{cx0}" y="98" width="6" height="20" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+12}" y="112" class="lbl mono" fill="{GREEN}">13 MiB (v11.3, 52.1×, ≤14.1 MB)</text>')
+    cx0 = 466
+    out.append(f'<text x="{cx0}" y="334" class="lbl">Peak RAM (hg38 5-way chrX / 217-way Cannabis)</text>')
+    out.append(f'<rect x="{cx0}" y="340" width="380" height="19" rx="4" fill="{VERMILION}"/>')
+    out.append(f'<text x="{cx0+8}" y="353" class="ax mono" fill="#ffffff" font-weight="700">Buffered MAF (v11.2): 677 MiB</text>')
+    out.append(f'<rect x="{cx0}" y="362" width="8.0" height="19" rx="2" fill="{GREEN}"/>')
+    out.append(f'<text x="{cx0+15}" y="375" class="lbl mono" fill="{GREEN}">13 MiB (v11.3, 52.1×, worker ≤14.1 MB)</text>')
 
-    out.append(f'<text x="{cx0}" y="142" class="lbl">Deep 217-Way Block Merge (mz_yama.c)</text>')
-    out.append(f'<rect x="{cx0}" y="150" width="220" height="20" rx="4" fill="{ORANGE}"/>')
-    out.append(f'<text x="{cx0+6}" y="164" class="ax mono" fill="#ffffff" font-weight="700">Pairwise row×row DP: 953 s</text>')
-    out.append(f'<rect x="{cx0}" y="174" width="7" height="20" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="{cx0+13}" y="188" class="lbl mono" fill="{BLUE}">5×5 column-count DP: 29 s (32.8×)</text>')
+    out.append(f'<text x="{cx0}" y="400" class="lbl">Deep 217-Way Block Merge (mz_yama.c, NC_044372.1.24)</text>')
+    out.append(f'<rect x="{cx0}" y="406" width="380" height="19" rx="4" fill="{ORANGE}"/>')
+    out.append(f'<text x="{cx0+8}" y="419" class="ax mono" fill="#ffffff" font-weight="700">Pairwise row×row DP: 953 s</text>')
+    out.append(f'<rect x="{cx0}" y="428" width="11.6" height="19" rx="2" fill="{BLUE}"/>')
+    out.append(f'<text x="{cx0+18}" y="441" class="lbl mono" fill="{BLUE}">5×5 column-count DP: 29 s (32.8×)</text>')
 
-    out.append(f'<text x="{cx0}" y="218" class="lbl">Single 5 Mb Piece Runtime (multiz#28)</text>')
-    out.append(f'<rect x="{cx0}" y="226" width="220" height="20" rx="4" fill="{GREY}"/>')
-    out.append(f'<text x="{cx0+6}" y="240" class="ax mono" fill="#ffffff" font-weight="700">Baseline piece merge: 26.8 core-h</text>')
-    out.append(f'<rect x="{cx0}" y="250" width="33.6" height="20" rx="3" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+40}" y="264" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, col-count DP)</text>')
+    out.append(f'<text x="{cx0}" y="466" class="lbl">Single 5 Mb Piece Runtime (multiz#28)</text>')
+    out.append(f'<rect x="{cx0}" y="472" width="380" height="19" rx="4" fill="{GREY}"/>')
+    out.append(f'<text x="{cx0+8}" y="485" class="ax mono" fill="#ffffff" font-weight="700">Baseline piece merge: 26.8 core-h</text>')
+    out.append(f'<rect x="{cx0}" y="494" width="58.1" height="19" rx="3" fill="{GREEN}"/>')
+    out.append(f'<text x="{cx0+65}" y="507" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, col-count DP)</text>')
 
-    out.append(f'<rect x="{cx0-4}" y="282" width="244" height="32" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append(f'<text x="{cx0+118}" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t)</text>')
+    out.append(f'<rect x="{cx0}" y="518" width="414" height="28" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
+    out.append(f'<text x="{cx0+207}" y="536" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t blocks)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure3_scalability_benchmarks.svg").write_text("\n".join(out))

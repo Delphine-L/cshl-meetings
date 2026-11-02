@@ -5,12 +5,13 @@ All data are read directly from primary TSV/BED files in /home/rcb112/project/ge
 Follows Anton Nekrutenko / writing-repo rules:
 - Okabe-Ito colorblind-safe palette
 - Whole-line <text> runs (never word-positioned SVG text)
-- Zero semicolons in prose/labels; closed em-dashes (—)
+- Zero semicolons in prose/labels, closed em-dashes (—)
 - Strictly verified for zero bounding-box overlaps, zero panel-divider crossings, and zero OOB labels.
 """
 from __future__ import annotations
 
 import csv
+import statistics
 from pathlib import Path
 
 CANNABIS_ROOT = Path("/home/rcb112/project/gemini/cannabis")
@@ -96,12 +97,12 @@ def build_figure1() -> None:
         out.append(f'<text x="{xp:.1f}" y="{py0+190}" text-anchor="middle" class="ax">{pct}%</text>')
     out.append(f'<text x="{(px0+px1)/2:.1f}" y="{py0+205}" text-anchor="middle" class="lbl">Soft-masked genome fraction (%)</text>')
 
-    cohorts = [
-        ("181 Salk HiFi haps", "n = 181 phased", 75.12, 80.86, 62.90, 64.02),
-        ("25 NCBI + cs10 ref", "cs10 = 46.76%", 27.42, 60.43, 62.19, 65.80),
-        ("11 NGDC / CoGe / Giga", "unmasked intake", 0.00, 0.68, 63.10, 67.04),
-        ("4 Phased Calib Haps", "EH23a/b, DPSVa, TWSVa", 76.84, 78.18, 62.90, 64.02),
-        ("SKSV Unphased Diploid", "2.30 Gb (92% dup)", 78.41, 78.41, 66.95, 66.95),
+    cohorts: list[tuple[str, str, float, float, float | None, float | None]] = [
+        ("181 Salk assemblies", "98 phased + 83 unphased", 75.12, 80.86, None, None),
+        ("25 NCBI + cs10 ref", "cs10 = 46.86% (55.74% non-N)", 27.42, 60.43, None, None),
+        ("11 NGDC / CoGe / Giga", "9 arrived at 0.00%", 0.00, 0.68, None, None),
+        ("4 Phased Calib Haps", "EH23a/b, DPSVa, TWSVa", 79.00, 79.61, 62.90, 64.02),
+        ("SKSV Unphased Diploid", "2.30 Gb (92.0% dup)", 79.71, 79.71, 66.95, 66.95),
     ]
 
     for idx, (name, sub, a_lo, a_hi, u_lo, u_hi) in enumerate(cohorts):
@@ -114,40 +115,41 @@ def build_figure1() -> None:
         out.append(f'<rect x="{ax0:.1f}" y="{y-6}" width="{ax1-ax0:.1f}" height="7" rx="3" fill="{VERMILION}" opacity="0.85"/>')
         out.append(f'<circle cx="{x_pct(a_lo):.1f}" cy="{y-2.5}" r="3.5" fill="{VERMILION}"/>')
         out.append(f'<circle cx="{x_pct(a_hi):.1f}" cy="{y-2.5}" r="3.5" fill="{VERMILION}"/>')
-        ux0, ux1 = x_pct(u_lo), x_pct(u_hi)
-        if ux1 - ux0 < 3:
-            ux1 = ux0 + 3
-        out.append(f'<rect x="{ux0:.1f}" y="{y+4}" width="{ux1-ux0:.1f}" height="7" rx="3" fill="{GREEN}"/>')
-        out.append(f'<circle cx="{x_pct(u_lo):.1f}" cy="{y+7.5}" r="3.5" fill="{GREEN}"/>')
-        out.append(f'<circle cx="{x_pct(u_hi):.1f}" cy="{y+7.5}" r="3.5" fill="{GREEN}"/>')
+        if u_lo is not None and u_hi is not None:
+            ux0, ux1 = x_pct(u_lo), x_pct(u_hi)
+            if ux1 - ux0 < 3:
+                ux1 = ux0 + 3
+            out.append(f'<rect x="{ux0:.1f}" y="{y+4}" width="{ux1-ux0:.1f}" height="7" rx="3" fill="{GREEN}"/>')
+            out.append(f'<circle cx="{x_pct(u_lo):.1f}" cy="{y+7.5}" r="3.5" fill="{GREEN}"/>')
+            out.append(f'<circle cx="{x_pct(u_hi):.1f}" cy="{y+7.5}" r="3.5" fill="{GREEN}"/>')
 
     # Legend for Panel A top (fits strictly inside [162, 438])
     out.append(f'<rect x="{px0}" y="{py0-15}" width="9" height="6" rx="2" fill="{VERMILION}"/>')
     out.append(f'<text x="{px0+12}" y="{py0-9}" class="ax">Arrived (0.0–80.9%)</text>')
-    out.append(f'<rect x="{px0+130}" y="{py0-15}" width="9" height="6" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="{px0+142}" y="{py0-9}" class="ax">4-detector (62–67%)</text>')
+    out.append(f'<rect x="{px0+124}" y="{py0-15}" width="9" height="6" rx="2" fill="{GREEN}"/>')
+    out.append(f'<text x="{px0+136}" y="{py0-9}" class="ax">4-detector union (62.2–67.0%)</text>')
 
     # Bottom-left card (fits strictly inside [14, 434])
     by0 = 282
     out.append(f'<rect x="14" y="{by0}" width="420" height="96" rx="8" fill="{BG_SOFT}" stroke="{LINE}"/>')
     out.append(f'<text x="24" y="{by0+17}" class="title">4-Detector Breakdown &amp; Partition Audit</text>')
     dets = [
-        ("WindowMasker", 61.5, BLUE, "59.3–63.6%"),
+        ("WindowMasker", 60.0, BLUE, "59.3–60.5% (63.6%)"),
         ("Tantan", 12.2, ORANGE, "12.2%"),
         ("DustMasker", 11.0, SKY, "10.7–11.2%"),
         ("FasTAN", 7.6, PURPLE, "5.5–9.7%"),
-        ("4-Detector Union", 63.5, GREEN, "62.9–64.0%"),
+        ("4-Detector Union", 63.5, GREEN, "62.9–64.0% (67.0%)"),
     ]
     for i, (dname, val, col, txt) in enumerate(dets):
         yy = by0 + 31 + i * 12.5
         out.append(f'<text x="114" y="{yy+4}" text-anchor="end" class="ax">{esc(dname)}</text>')
-        bw = (val / 70.0) * 125.0
+        bw = (val / 75.0) * 102.0
         out.append(f'<rect x="120" y="{yy-4}" width="{bw:.1f}" height="8" rx="2" fill="{col}"/>')
         out.append(f'<text x="{124+bw:.1f}" y="{yy+4}" class="ax mono">{esc(txt)}</text>')
 
     out.append(f'<line x1="306" y1="{by0+24}" x2="306" y2="{by0+88}" stroke="{LINE}"/>')
     out.append(f'<text x="314" y="{by0+38}" class="lbl" fill="{GREEN}">+167.5–170.2 Mb</text>')
-    out.append(f'<text x="314" y="{by0+51}" class="ax">restored single-copy</text>')
+    out.append(f'<text x="314" y="{by0+51}" class="ax">restored unmasked</text>')
     out.append(f'<text x="314" y="{by0+69}" class="lbl" fill="{VERMILION}">44.4–51.9 Mb</text>')
     out.append(f'<text x="314" y="{by0+82}" class="ax">newly masked DNA</text>')
 
@@ -161,7 +163,7 @@ def build_figure1() -> None:
         12,
         "B",
         "Gap-Boundary Reference Splitting (cs10)",
-        "185 cuts at N-runs ≥ 10 kb → 195 ~5 Mb pieces (0 genes cut)",
+        "185 cuts (77 ≥10 kb, 95 <10 kb, 13 fixed) → 195 pieces",
     )
 
     chrom_info = [
@@ -194,7 +196,6 @@ def build_figure1() -> None:
 
     for idx, (acc, cname, clen) in enumerate(chrom_info):
         yy = cy0 + 10 + idx * 26.5
-        cw = (clen / max_len) * (cx1 - cx0)
         cuts = sorted(cuts_by_acc[acc])
         n_pieces = len(cuts) + 1
         out.append(f'<text x="{cx0-8}" y="{yy+10}" text-anchor="end" class="lbl">{cname} <tspan class="ax mono">({clen/1e6:.0f}M)</tspan></text>')
@@ -212,7 +213,7 @@ def build_figure1() -> None:
         out.append(f'<text x="842" y="{yy+10}" class="ax mono">{n_pieces} pcs</text>')
 
     out.append(f'<rect x="462" y="352" width="424" height="26" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append(f'<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pieces, mean 4.38 Mb) · chr7 highlighted (CBDAS)</text>')
+    out.append(f'<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 chr pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs) highlighted</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure1_architecture.svg").write_text("\n".join(out))
@@ -231,14 +232,17 @@ def build_figure2() -> None:
         12,
         10,
         "A",
-        "Colinear Identity Spectrum",
-        "[85, 95)% window (8.2×–18.0× cut)",
+        "Empirical Identity Spectrum",
+        "EH23a × EH23b (8.2×–18.0× paralog cut)",
     )
-    ax0, ax1 = 44, 250
-    ay0, ay1 = 56, 286
+    ax0, ax1 = 48, 252
+    ay0, ay1 = 54, 240
 
     def x_id(pct: float) -> float:
         return ax0 + ((pct - 50.0) / 50.0) * (ax1 - ax0)
+
+    def y_bin(pct_share: float) -> float:
+        return ay1 - (pct_share / 22.0) * (ay1 - ay0)
 
     out.append(f'<rect x="{x_id(50):.1f}" y="{ay0}" width="{x_id(70)-x_id(50):.1f}" height="{ay1-ay0}" fill="#fee2e2" opacity="0.55"/>')
     out.append(f'<rect x="{x_id(70):.1f}" y="{ay0}" width="{x_id(85)-x_id(70):.1f}" height="{ay1-ay0}" fill="#fef3c7" opacity="0.55"/>')
@@ -247,38 +251,51 @@ def build_figure2() -> None:
 
     out.append(f'<line x1="{ax0}" y1="{ay1}" x2="{ax1}" y2="{ay1}" stroke="{INK}" stroke-width="1.2"/>')
     out.append(f'<line x1="{ax0}" y1="{ay0}" x2="{ax0}" y2="{ay1}" stroke="{INK}" stroke-width="1.2"/>')
+    for ytick in [0, 5, 10, 15, 20]:
+        yy = y_bin(ytick)
+        out.append(f'<line x1="{ax0}" y1="{yy:.1f}" x2="{ax1}" y2="{yy:.1f}" stroke="{LINE}" stroke-dasharray="2,2"/>')
+        out.append(f'<text x="{ax0-4}" y="{yy+3:.1f}" text-anchor="end" class="ax">{ytick}%</text>')
+    out.append(f'<text x="16" y="{(ay0+ay1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 16 {(ay0+ay1)/2:.1f})">Pairs per 2% bin (%)</text>')
+
     for pct in [50, 60, 70, 80, 90, 100]:
         xx = x_id(pct)
         out.append(f'<line x1="{xx:.1f}" y1="{ay1}" x2="{xx:.1f}" y2="{ay1+4}" stroke="{INK}"/>')
-        out.append(f'<text x="{xx:.1f}" y="{ay1+15}" text-anchor="middle" class="ax">{pct}%</text>')
-    out.append(f'<text x="{(ax0+ax1)/2:.1f}" y="{ay1+30}" text-anchor="middle" class="lbl">Alignment identity (%)</text>')
+        out.append(f'<text x="{xx:.1f}" y="{ay1+14}" text-anchor="middle" class="ax">{pct}%</text>')
+    out.append(f'<text x="{(ax0+ax1)/2:.1f}" y="{ay1+28}" text-anchor="middle" class="lbl">Alignment identity (%)</text>')
 
-    pts_unfilt = [
-        (52, 0.12), (56, 0.28), (60, 0.45), (65, 0.58), (70, 0.72),
-        (75, 0.88), (80, 0.94), (85, 0.86), (90, 0.82), (94, 0.88), (97, 0.96), (99.5, 0.45)
-    ]
-    pts_colin = [
-        (52, 0.01), (56, 0.02), (60, 0.03), (65, 0.05), (70, 0.09),
-        (75, 0.18), (80, 0.34), (85, 0.58), (88, 0.76), (91, 0.88), (94, 0.92), (97, 0.95), (99.5, 0.44)
-    ]
+    def load_2pct_spectrum(tsv_path: Path) -> list[tuple[float, float]]:
+        lines = [ln for ln in tsv_path.read_text().splitlines() if not ln.startswith("#")]
+        rows = list(csv.DictReader(lines, delimiter="\t"))
+        tot = sum(int(r["count"]) for r in rows)
+        pts = []
+        for lo in range(50, 98, 2):
+            hi = lo + 2
+            s = sum(int(r["count"]) for r in rows if lo <= float(r["band"]) < hi)
+            pts.append((lo + 1.0, (s / float(tot)) * 100.0))
+        s_top = sum(int(r["count"]) for r in rows if float(r["band"]) >= 98.0)
+        pts.append((98.75, (s_top / float(tot)) * 100.0))
+        return pts
+
+    pts_unfilt = load_2pct_spectrum(CANNABIS_ROOT / "data/processed/segment_census_EH23a_x_EH23b_strata.tsv")
+    pts_colin = load_2pct_spectrum(CANNABIS_ROOT / "data/processed/segment_census_EH23a_x_EH23b__colinear_noexon_strata.tsv")
 
     def poly(pts: list[tuple[float, float]]) -> str:
-        return " ".join(f"{x_id(p):.1f},{ay1 - v*(ay1-ay0-36):.1f}" for p, v in pts)
+        return " ".join(f"{x_id(p):.1f},{y_bin(v):.1f}" for p, v in pts)
 
     out.append(f'<polyline fill="none" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3" points="{poly(pts_unfilt)}"/>')
-    out.append(f'<polyline fill="none" stroke="{BLUE}" stroke-width="2.8" points="{poly(pts_colin)}"/>')
+    out.append(f'<polyline fill="none" stroke="{BLUE}" stroke-width="2.6" points="{poly(pts_colin)}"/>')
 
-    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+15}" text-anchor="middle" class="ax" fill="{VERMILION}">HOXD70 (&lt;70%)</text>')
-    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+27}" text-anchor="middle" class="ax" fill="{VERMILION}">49.7% noise</text>')
-    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+15}" text-anchor="middle" class="lbl" fill="{GREEN}">[85, 95)%</text>')
-    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+27}" text-anchor="middle" class="ax" fill="{GREEN}">331.05 Mb</text>')
+    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+14}" text-anchor="middle" class="ax" fill="{VERMILION}">HOXD70 (&lt;70%)</text>')
+    out.append(f'<text x="{x_id(60):.1f}" y="{ay0+26}" text-anchor="middle" class="ax" fill="{VERMILION}">45.2% raw pairs</text>')
+    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+14}" text-anchor="middle" class="lbl" fill="{GREEN}">[85, 95)%</text>')
+    out.append(f'<text x="{x_id(90):.1f}" y="{ay0+26}" text-anchor="middle" class="ax" fill="{GREEN}">82.8 Mb (331M 4×)</text>')
 
-    # Bottom-right legend strictly below both curves (x in [150, 247], y in [248, 282])
-    out.append(f'<rect x="150" y="248" width="97" height="34" rx="4" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<line x1="154" y1="259" x2="165" y2="259" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
-    out.append(f'<text x="168" y="262" class="ax">Unfiltered (54.5%)</text>')
-    out.append(f'<line x1="154" y1="273" x2="165" y2="273" stroke="{BLUE}" stroke-width="2.8"/>')
-    out.append(f'<text x="168" y="276" class="ax">Colinear (6.6%)</text>')
+    # Bottom-right legend strictly below the plot frame (x in [72, 254], y in [276, 322])
+    out.append(f'<rect x="72" y="276" width="182" height="44" rx="4" fill="#ffffff" stroke="{LINE}"/>')
+    out.append(f'<line x1="78" y1="290" x2="91" y2="290" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
+    out.append(f'<text x="95" y="293" class="ax">Unfiltered (45.2% &lt;70% id)</text>')
+    out.append(f'<line x1="78" y1="308" x2="91" y2="308" stroke="{BLUE}" stroke-width="2.6"/>')
+    out.append(f'<text x="95" y="311" class="ax">Colinear 1-chain (54.5% vs 6.6%)</text>')
 
     # Divider 1 at x = 266
     out.append(f'<line x1="266" y1="12" x2="266" y2="{h-12}" stroke="{LINE}"/>')
@@ -290,7 +307,7 @@ def build_figure2() -> None:
         10,
         "B",
         "10-Chr Held-Out Referee (Cb2 × cs10)",
-        "10/10 arms & 67/70 1 Mb windows won vs HOXD70",
+        "9/9 completed arms (chr8 OOM), 9/10 loci, 67/70 windows",
     )
 
     chrom_tags = ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chrX"]
@@ -343,9 +360,13 @@ def build_figure2() -> None:
         yy = by0 + idx * 21.5
         out.append(f'<text x="{bx0-6}" y="{yy+12}" text-anchor="end" class="lbl">{ctag}</text>')
         aw, al = arm_scores[ctag]
-        acol = GREEN if (aw == 40 and al == 0) else BLUE
-        out.append(f'<rect x="{bx0+2}" y="{yy}" width="39" height="16.5" rx="3" fill="{acol}"/>')
-        out.append(f'<text x="{bx0+21.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="#ffffff" font-weight="700">{aw}-{al}</text>')
+        if ctag == "chr8" and aw == 0 and al == 0:
+            out.append(f'<rect x="{bx0+2}" y="{yy}" width="39" height="16.5" rx="3" fill="{GREY}"/>')
+            out.append(f'<text x="{bx0+21.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="#ffffff" font-weight="700">OOM</text>')
+        else:
+            acol = GREEN if (aw == 40 and al == 0) else BLUE
+            out.append(f'<rect x="{bx0+2}" y="{yy}" width="39" height="16.5" rx="3" fill="{acol}"/>')
+            out.append(f'<text x="{bx0+21.5}" y="{yy+11.5}" text-anchor="middle" class="ax mono" fill="#ffffff" font-weight="700">{aw}-{al}</text>')
         lw, ll = loc_scores[ctag]
         lcol = GREEN if (lw == 40 and ll == 0) else (BLUE if lw > ll else VERMILION)
         out.append(f'<rect x="{bx0+45}" y="{yy}" width="39" height="16.5" rx="3" fill="{lcol}"/>')
@@ -365,18 +386,18 @@ def build_figure2() -> None:
                 wcol = "#e2e8f0"
             out.append(f'<rect x="{wx:.1f}" y="{yy+1}" width="8" height="14.5" rx="1.5" fill="{wcol}"/>')
 
-    # Two-row legend under Panel B (strictly inside [278, 608])
-    out.append(f'<rect x="280" y="286" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="292" y="294" class="ax">40–0 Dominant (7 arms, 28 win)</text>')
-    out.append(f'<rect x="462" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
-    out.append(f'<text x="474" y="294" class="ax">Majority win (67/70 win)</text>')
+    # Two-row legend under Panel B (strictly inside [278, 610])
+    out.append(f'<rect x="278" y="286" width="9" height="9" rx="2" fill="{GREEN}"/>')
+    out.append(f'<text x="290" y="294" class="ax">40–0 Dominant (7 arms, 2 loci, 28/70)</text>')
+    out.append(f'<rect x="478" y="286" width="9" height="9" rx="2" fill="{BLUE}"/>')
+    out.append(f'<text x="490" y="294" class="ax">Crossing win (39/70)</text>')
 
-    out.append(f'<rect x="280" y="303" width="9" height="9" rx="2" fill="{GOLD}"/>')
-    out.append(f'<text x="292" y="311" class="ax">Split (1)</text>')
-    out.append(f'<rect x="352" y="303" width="9" height="9" rx="2" fill="{VERMILION}"/>')
-    out.append(f'<text x="364" y="311" class="ax">Loss (2/70 win)</text>')
-    out.append(f'<rect x="462" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
-    out.append(f'<text x="474" y="311" class="ax">Ineligible (&lt;500 kb PAF)</text>')
+    out.append(f'<rect x="278" y="303" width="9" height="9" rx="2" fill="{GOLD}"/>')
+    out.append(f'<text x="290" y="311" class="ax">Split (1/70)</text>')
+    out.append(f'<rect x="356" y="303" width="9" height="9" rx="2" fill="{VERMILION}"/>')
+    out.append(f'<text x="368" y="311" class="ax">Loss (1 locus, 2/70)</text>')
+    out.append(f'<rect x="478" y="303" width="9" height="9" rx="2" fill="#e2e8f0"/>')
+    out.append(f'<text x="490" y="311" class="ax">Ineligible (&lt;500 kb)</text>')
 
     # Divider 2 at x = 618
     out.append(f'<line x1="618" y1="12" x2="618" y2="{h-12}" stroke="{LINE}"/>')
@@ -393,10 +414,10 @@ def build_figure2() -> None:
 
     bases = ["A", "C", "G", "T"]
     mat = [
-        [80, -197, -92, -198],
-        [-197, 100, -191, -92],
-        [-92, -191, 100, -197],
-        [-198, -92, -197, 80],
+        [80, -191, -92, -198],
+        [-191, 100, -197, -92],
+        [-92, -197, 100, -191],
+        [-198, -92, -191, 80],
     ]
     mx0, my0 = 674, 70
     cell_w, cell_h = 48, 36
@@ -421,11 +442,11 @@ def build_figure2() -> None:
 
     cy_card = 224
     out.append(f'<rect x="630" y="{cy_card}" width="256" height="102" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
-    out.append(f'<text x="638" y="{cy_card+18}" class="lbl">GC match +100 vs AT +80 (AT = 62.6%)</text>')
-    out.append(f'<text x="638" y="{cy_card+36}" class="ax">Ti: −92 · Tv: −191..−198 (Ts/Tv = 2.12)</text>')
-    out.append(f'<text x="638" y="{cy_card+54}" class="ax">2×2 replication ΔH = 0.025 bits (|ΔS| ≤ 4)</text>')
-    out.append(f'<text x="638" y="{cy_card+72}" class="lbl" fill="{BLUE}">Gap 682/51 (vs 400/30 default):</text>')
-    out.append(f'<text x="638" y="{cy_card+89}" class="ax">+7.6% block len · 70.6% single-cov</text>')
+    out.append(f'<text x="638" y="{cy_card+18}" class="lbl">GC match +100 vs AT +80 (train AT = 57.7%)</text>')
+    out.append(f'<text x="638" y="{cy_card+36}" class="ax">Ti: −92 · Tv: −191 A-C/G-T, −197 C-G, −198 A-T</text>')
+    out.append(f'<text x="638" y="{cy_card+54}" class="ax">Pair replication ΔH = 0.0021 bits (|ΔS| ≤ 1)</text>')
+    out.append(f'<text x="638" y="{cy_card+72}" class="lbl" fill="{BLUE}">Gap 682/51 (= 400/30 × 1.414/0.83):</text>')
+    out.append(f'<text x="638" y="{cy_card+89}" class="ax">79.6% CDS cov on chr3 (550/40: 70.6% 1-cov)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure2_matrix_calibration.svg").write_text("\n".join(out))
@@ -437,16 +458,6 @@ def build_figure2() -> None:
 def build_figure3() -> None:
     w, h = 900, 330
     out = svg_header(w, h)
-
-    # Panel A (x in [12, 368], divider 1 at x = 376)
-    panel_badge(
-        out,
-        12,
-        10,
-        "A",
-        "216-Query Coverage Across cs10",
-        "Median 65.2% synNet (70.1% rbest), range 12.2–85.1%",
-    )
 
     q_rows = []
     q_path = CANNABIS_ROOT / "data/processed/query_coverage.tsv"
@@ -460,8 +471,20 @@ def build_figure3() -> None:
             )
         )
     q_rows.sort(key=lambda r: r[2])
+    syn_med = statistics.median(r[2] for r in q_rows)
+    rb_med = statistics.median(r[3] for r in q_rows)
 
-    wx0, wx1 = 46, 360
+    # Panel A (x in [12, 368], divider 1 at x = 376)
+    panel_badge(
+        out,
+        12,
+        10,
+        "A",
+        "216-Query Coverage Across cs10",
+        f"Median {syn_med:.1f}% synNet ({rb_med:.1f}% rbest), range 12.2–85.1%",
+    )
+
+    wx0, wx1 = 52, 360
     wy0, wy1 = 56, 266
 
     def y_cov(pct: float) -> float:
@@ -471,6 +494,7 @@ def build_figure3() -> None:
         yy = y_cov(pct)
         out.append(f'<line x1="{wx0}" y1="{yy:.1f}" x2="{wx1}" y2="{yy:.1f}" stroke="{LINE}" stroke-dasharray="2,2"/>')
         out.append(f'<text x="{wx0-5}" y="{yy+3:.1f}" text-anchor="end" class="ax">{pct}%</text>')
+    out.append(f'<text x="16" y="{(wy0+wy1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 16 {(wy0+wy1)/2:.1f})">cs10 non-N coverage (%)</text>')
 
     n_q = len(q_rows)
     bar_step = (wx1 - wx0) / float(n_q)
@@ -490,12 +514,12 @@ def build_figure3() -> None:
 
     out.append(f'<polyline fill="none" stroke="{INK}" stroke-width="1.5" stroke-dasharray="3,2" points="{" ".join(rbest_pts)}"/>')
 
-    ymed = y_cov(65.2)
+    ymed = y_cov(syn_med)
     out.append(f'<line x1="{wx0}" y1="{ymed:.1f}" x2="{wx1}" y2="{ymed:.1f}" stroke="{VERMILION}" stroke-width="1.5" stroke-dasharray="4,3"/>')
 
     # Summary callout placed in the open upper-left whitespace (y in [60, 94], strictly above all bars and rbest points)
     out.append(f'<rect x="{wx0+6}" y="60" width="212" height="32" rx="4" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<text x="{wx0+12}" y="73" class="lbl" fill="{VERMILION}">Median synNet = 65.2% (rbest = 70.1%)</text>')
+    out.append(f'<text x="{wx0+12}" y="73" class="lbl" fill="{VERMILION}">Median synNet = {syn_med:.1f}% (rbest = {rb_med:.1f}%)</text>')
     out.append(f'<text x="{wx0+12}" y="87" class="ax">Range: Chemdog91 (12.2%) – ACDC (85.1%)</text>')
     out.append(f'<text x="{(wx0+wx1)/2:.1f}" y="{wy1+16}" text-anchor="middle" class="lbl">216 queries sorted by cs10 synNet coverage</text>')
 
@@ -504,15 +528,15 @@ def build_figure3() -> None:
     out.append(f'<text x="26" y="300" class="ax">Salk HiFi phased (98)</text>')
     out.append(f'<rect x="144" y="292" width="9" height="9" rx="2" fill="{ORANGE}"/>')
     out.append(f'<text x="156" y="300" class="ax">Unphased/diploid (84)</text>')
-    out.append(f'<line x1="262" y1="296.5" x2="276" y2="296.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
-    out.append(f'<text x="280" y="300" class="ax">Median (65.2%)</text>')
+    out.append(f'<line x1="258" y1="296.5" x2="272" y2="296.5" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
+    out.append(f'<text x="276" y="300" class="ax">Median ({syn_med:.1f}%)</text>')
 
     out.append(f'<rect x="14" y="308" width="9" height="9" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="26" y="316" class="ax">T2T/GWH &amp; other (24)</text>')
+    out.append(f'<text x="26" y="316" class="ax">T2T/GWH (7) &amp; other (17)</text>')
     out.append(f'<rect x="144" y="308" width="9" height="9" rx="2" fill="{PURPLE}"/>')
     out.append(f'<text x="156" y="316" class="ax">Pike ONT (10)</text>')
-    out.append(f'<line x1="262" y1="312.5" x2="276" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
-    out.append(f'<text x="280" y="316" class="ax">rbest envelope</text>')
+    out.append(f'<line x1="258" y1="312.5" x2="272" y2="312.5" stroke="{INK}" stroke-width="1.8" stroke-dasharray="3,2"/>')
+    out.append(f'<text x="276" y="316" class="ax">rbest ({rb_med:.1f}% med)</text>')
 
     # Divider 1 at x = 376
     out.append(f'<line x1="376" y1="12" x2="376" y2="{h-12}" stroke="{LINE}"/>')
@@ -540,10 +564,10 @@ def build_figure3() -> None:
     out.append(f'<text x="{bx0+100}" y="196" class="lbl mono" fill="{BLUE}">6.50 TB (−56.6%)</text>')
 
     out.append(f'<rect x="{bx0}" y="220" width="222" height="94" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
-    out.append(f'<text x="{bx0+10}" y="239" class="lbl">UCSC hg38 × panTro6 Parity:</text>')
-    out.append(f'<text x="{bx0+10}" y="257" class="ax">• 99.99% UCSC all/rbest chain pairs</text>')
-    out.append(f'<text x="{bx0+10}" y="275" class="ax">• Median 28 min/job, RAM &lt; 3.97 GB</text>')
-    out.append(f'<text x="{bx0+10}" y="293" class="ax">• Byte-identical doRecipBest nets</text>')
+    out.append(f'<text x="{bx0+10}" y="239" class="lbl">Benchmarks &amp; UCSC chr21 Parity:</text>')
+    out.append(f'<text x="{bx0+10}" y="257" class="ax">• 99.99% hg38×panTro6 chr21 chains</text>')
+    out.append(f'<text x="{bx0+10}" y="275" class="ax">• EH23a×b: med 28 min/job, &lt;3.97 GB</text>')
+    out.append(f'<text x="{bx0+10}" y="293" class="ax">• Byte-identical doRecipBest chains (5)</text>')
 
     # Divider 2 at x = 630
     out.append(f'<line x1="630" y1="12" x2="630" y2="{h-12}" stroke="{LINE}"/>')
@@ -560,9 +584,9 @@ def build_figure3() -> None:
     cx0 = 646
     out.append(f'<text x="{cx0}" y="66" class="lbl">Peak RAM (hg38 5-way / 217-way)</text>')
     out.append(f'<rect x="{cx0}" y="74" width="220" height="20" rx="4" fill="{VERMILION}"/>')
-    out.append(f'<text x="{cx0+6}" y="88" class="ax mono" fill="#ffffff" font-weight="700">Buffered MAF (v11.3): 677 MiB</text>')
+    out.append(f'<text x="{cx0+6}" y="88" class="ax mono" fill="#ffffff" font-weight="700">Buffered MAF (v11.2): 677 MiB</text>')
     out.append(f'<rect x="{cx0}" y="98" width="6" height="20" rx="2" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+12}" y="112" class="lbl mono" fill="{GREEN}">13 MiB (52.1×, 217-way ≤14.1 MB)</text>')
+    out.append(f'<text x="{cx0+12}" y="112" class="lbl mono" fill="{GREEN}">13 MiB (v11.3, 52.1×, ≤14.1 MB)</text>')
 
     out.append(f'<text x="{cx0}" y="142" class="lbl">Deep 217-Way Block Merge (mz_yama.c)</text>')
     out.append(f'<rect x="{cx0}" y="150" width="220" height="20" rx="4" fill="{ORANGE}"/>')
@@ -570,21 +594,21 @@ def build_figure3() -> None:
     out.append(f'<rect x="{cx0}" y="174" width="7" height="20" rx="2" fill="{BLUE}"/>')
     out.append(f'<text x="{cx0+13}" y="188" class="lbl mono" fill="{BLUE}">5×5 column-count DP: 29 s (32.8×)</text>')
 
-    out.append(f'<text x="{cx0}" y="218" class="lbl">5 Mb Piece Runtime (195 chr pieces)</text>')
+    out.append(f'<text x="{cx0}" y="218" class="lbl">Single 5 Mb Piece Runtime (multiz#28)</text>')
     out.append(f'<rect x="{cx0}" y="226" width="220" height="20" rx="4" fill="{GREY}"/>')
     out.append(f'<text x="{cx0+6}" y="240" class="ax mono" fill="#ffffff" font-weight="700">Baseline piece merge: 26.8 core-h</text>')
     out.append(f'<rect x="{cx0}" y="250" width="33.6" height="20" rx="3" fill="{GREEN}"/>')
-    out.append(f'<text x="{cx0+40}" y="264" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, int64_t)</text>')
+    out.append(f'<text x="{cx0+40}" y="264" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, col-count DP)</text>')
 
     out.append(f'<rect x="{cx0}" y="282" width="236" height="32" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append(f'<text x="{cx0+118}" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF output</text>')
+    out.append(f'<text x="{cx0+118}" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t blocks)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure3_scalability_benchmarks.svg").write_text("\n".join(out))
 
 
 # ==============================================================================
-# FIGURE 4: Compact CBDAS Trimodal Resolution + netFilter -syn Paralog Trade-off
+# FIGURE 4: Compact CBDAS Stratification + netFilter -syn Paralog Trade-off
 # ==============================================================================
 def build_figure4() -> None:
     w, h = 900, 215
@@ -597,21 +621,22 @@ def build_figure4() -> None:
         10,
         "A",
         "CBDAS (chr7:30.98 Mb) Across 216 Queries",
-        "79 intact (≥98.5%), 77 B-locus (93–98.5%), 60 pruned in synNet",
+        "79 intact (56 full), 77 B-locus (62 THC+1 both), 6 <93%, 54 pruned",
     )
 
     bx0 = 24
     cats = [
-        ("Intact CBDAS (≥98.5% id)", 79, GREEN, "79 (59 plants) — functional ortholog"),
-        ("B-locus pseudogene (93.0–98.5%)", 77, ORANGE, "77 (67 plants) — all 63 drug-type"),
-        ("Unaligned in synNet (pruned)", 60, VERMILION, "60 — 54 pruned by -syn (Finola 99.4%)"),
+        ("Intact CBDAS (≥98.5% id, 56 full-len)", 79, GREEN, "79 (59 plants) — functional copy"),
+        ("B-locus pseudogene (93.0–98.5%)", 77, ORANGE, "77 (67 plants) — 62 THC + 1 both"),
+        ("Diverged aligned (<93.0%, ≥50% CDS)", 6, SKY, "6 queries (91.9–92.9% id)"),
+        ("Unaligned in synNet (<50% CDS)", 54, VERMILION, "54 pruned by -syn (Finola 99.4%)"),
     ]
     for idx, (lbl, cnt, col, desc) in enumerate(cats):
-        yy = 56 + idx * 46
-        bw = (cnt / 85.0) * 145.0
+        yy = 54 + idx * 38
+        bw = max(6.0, (cnt / 85.0) * 140.0)
         out.append(f'<text x="{bx0}" y="{yy}" class="lbl">{esc(lbl)}</text>')
-        out.append(f'<rect x="{bx0}" y="{yy+6}" width="{bw:.1f}" height="18" rx="4" fill="{col}"/>')
-        out.append(f'<text x="{bx0+bw+8:.1f}" y="{yy+19}" class="ax">{esc(desc)}</text>')
+        out.append(f'<rect x="{bx0}" y="{yy+5}" width="{bw:.1f}" height="14" rx="3" fill="{col}"/>')
+        out.append(f'<text x="{bx0+bw+8:.1f}" y="{yy+16}" class="ax">{esc(desc)}</text>')
 
     # Divider at x = 468
     out.append(f'<line x1="468" y1="12" x2="468" y2="{h-12}" stroke="{LINE}"/>')
@@ -628,10 +653,10 @@ def build_figure4() -> None:
 
     rx0 = 492
     bars = [
-        ("TPS tandem family (41 genes, 9 clusters)", "418/8,856 pruned (4.7%)", 4.7, SKY),
-        ("BBE-like oxidocyclases (35 genes, 9 clusters)", "807/7,560 pruned (10.7%)", 10.7, BLUE),
+        ("TPS family (41 genes: 35 in 9 clusters + 6)", "418/8,856 pruned (4.7%)", 4.7, SKY),
+        ("BBE-like family (35 genes: 31 in 9 clusters + 4)", "807/7,560 pruned (10.7%)", 10.7, BLUE),
         ("Pre-filter recovered pairs reusing paralog", "569/1,225 reuse paralog (46.4%)", 46.4, VERMILION),
-        ("Recovered pairs reusing ≥50% shared CDS", "479/1,225 reuse ≥50% CDS (39.1%)", 39.1, ORANGE),
+        ("Recovered pairs reusing ≥50% shared CDS", "455/1,225 reuse ≥50% CDS (37.1%)", 37.1, ORANGE),
     ]
     for idx, (blbl, bval, pct, col) in enumerate(bars):
         yy = 54 + idx * 38
@@ -658,7 +683,7 @@ def build_figure5() -> None:
         10,
         "A",
         "Panagram k = 21 AH3Mb.chrY Profile (0–110.7 Mb)",
-        "PAR (0–29.1 Mb) vs 205,619 MSY Y-mers (males ≥0.976, XX ≤0.077)",
+        "PAR (0–29.1 Mb) vs 205,619 MSY Y-mers (males ≥0.976, V3 XX ≤0.077)",
     )
 
     v3_path = CANNABIS_ROOT / "reports/evidence/panagram_step0_2026-10-27/v3_k21.tsv"
@@ -680,7 +705,7 @@ def build_figure5() -> None:
             m_mean = (float(row["BCMb"]) + float(row["GRMa"]) + float(row["KOMPb"])) / 3.0
             chry_v3.append((mb, f_mean, m_mean))
 
-    px0, px1 = 46, 436
+    px0, px1 = 50, 436
     py0, py1 = 58, 255
 
     def x_mb(mb: float) -> float:
@@ -693,15 +718,17 @@ def build_figure5() -> None:
     out.append(f'<rect x="{px0}" y="{py0}" width="{x_par-px0:.1f}" height="{py1-py0}" fill="#e0f2fe" opacity="0.55"/>')
     out.append(f'<rect x="{x_par:.1f}" y="{py0}" width="{px1-x_par:.1f}" height="{py1-py0}" fill="#fef3c7" opacity="0.45"/>')
     out.append(f'<line x1="{x_par:.1f}" y1="{py0}" x2="{x_par:.1f}" y2="{py1}" stroke="{VERMILION}" stroke-width="1.8" stroke-dasharray="4,3"/>')
-    out.append(f'<rect x="52" y="144" width="90" height="16" rx="3" fill="#ffffff"/>')
-    out.append(f'<text x="{(px0+x_par)/2:.1f}" y="155" text-anchor="middle" class="lbl" fill="{BLUE}">PAR (0–29.1M)</text>')
-    out.append(f'<rect x="182" y="144" width="220" height="16" rx="3" fill="#ffffff"/>')
-    out.append(f'<text x="{(x_par+px1)/2:.1f}" y="155" text-anchor="middle" class="lbl" fill="{VERMILION}">Male-Specific Y (29.1–110.7 Mb)</text>')
+    out.append(f'<rect x="54" y="138" width="94" height="26" rx="3" fill="#ffffff"/>')
+    out.append(f'<text x="{(px0+x_par)/2:.1f}" y="149" text-anchor="middle" class="lbl" fill="{BLUE}">PAR (0–29.1M)</text>')
+    out.append(f'<text x="{(px0+x_par)/2:.1f}" y="160" text-anchor="middle" class="ax" fill="{BLUE}">all 21-mers</text>')
+    out.append(f'<rect x="176" y="144" width="236" height="16" rx="3" fill="#ffffff"/>')
+    out.append(f'<text x="{(x_par+px1)/2:.1f}" y="155" text-anchor="middle" class="lbl" fill="{VERMILION}">MSY: Y-specific 21-mers (29.1–110.7 Mb)</text>')
 
     for fv in [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]:
         yy = y_frac(fv)
         out.append(f'<line x1="{px0}" y1="{yy:.1f}" x2="{px1}" y2="{yy:.1f}" stroke="{LINE}" stroke-dasharray="2,2"/>')
         out.append(f'<text x="{px0-5}" y="{yy+3:.1f}" text-anchor="end" class="ax">{fv:.1f}</text>')
+    out.append(f'<text x="16" y="{(py0+py1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 16 {(py0+py1)/2:.1f})">Containment / Y-mer recall</text>')
 
     for mb_tick in [0, 29, 50, 70, 90, 110]:
         xx = x_mb(mb_tick)
@@ -721,7 +748,7 @@ def build_figure5() -> None:
     out.append(f'<line x1="22" y1="303" x2="40" y2="303" stroke="{GREEN}" stroke-width="3"/>')
     out.append(f'<text x="45" y="307" class="lbl">Male Y-carriers (BCMb 0.976, GRMa 0.984, KOMPb 0.987)</text>')
     out.append(f'<line x1="22" y1="319" x2="40" y2="319" stroke="{VERMILION}" stroke-width="3"/>')
-    out.append(f'<text x="45" y="323" class="lbl">Female XX (cs10 0.071, EH23a/b ≤0.077 · 30/30 ≤0.077)</text>')
+    out.append(f'<text x="45" y="323" class="lbl">Female XX (V3 3/3: cs10 0.071, EH23a/b ≤0.077 · P4 30/30 ≤0.320)</text>')
 
     # Divider at x = 452
     out.append(f'<line x1="452" y1="12" x2="452" y2="{h-12}" stroke="{LINE}"/>')
@@ -736,47 +763,68 @@ def build_figure5() -> None:
         "Tier P2 (43 genomes, 1.14 GB): 41/42 queries pass r ≥ 0.50",
     )
 
-    grma_cont: dict[tuple[str, int], float] = {}
-    for row in csv.DictReader((CANNABIS_ROOT / "reports/evidence/panagram_step0_2026-10-27/cont_k21_cs10.tsv").open(), delimiter="\t"):
-        grma_cont[(row["chrom"], int(row["start"]))] = float(row["GRMa"])
+    chrom_lens: dict[str, int] = {}
+    for row in csv.DictReader((CANNABIS_ROOT / "data/processed/wfi_cs10_splits.tsv").open(), delimiter="\t"):
+        c = row["chrom"]
+        chrom_lens[c] = max(chrom_lens.get(c, 0), int(row["cut"]))
 
-    pts_scatter = []
+    grma_cont: dict[tuple[str, int], float] = {}
+    grma_pos: dict[tuple[str, int], int] = {}
+    for row in csv.DictReader((CANNABIS_ROOT / "reports/evidence/panagram_step0_2026-10-27/cont_k21_cs10.tsv").open(), delimiter="\t"):
+        key = (row["chrom"], int(row["start"]))
+        grma_cont[key] = float(row["GRMa"])
+        grma_pos[key] = int(row["positions"])
+
+    pts_all_631 = []
     for row in csv.DictReader((CANNABIS_ROOT / "reports/evidence/panagram_step0_2026-10-27/identity_cs10_rbest.tsv").open(), delimiter="\t"):
         if row["genome"] == "GRMa":
+            c = row["chrom"]
+            st = int(row["start"])
             aln = int(row["aligned"])
             mat = int(row["matched"])
-            if aln >= 500_000:
-                key = (row["chrom"], int(row["start"]))
-                if key in grma_cont:
+            key = (c, st)
+            if key in grma_cont:
+                span = min(chrom_lens[c] - st, 1_000_000) if c in chrom_lens else min(grma_pos[key] * 100, 1_000_000)
+                if aln / float(span) >= 0.5 and aln > 0:
                     ident = (mat / float(aln)) * 100.0
                     cont = grma_cont[key]
-                    if 93.0 <= ident <= 100.0 and 0.55 <= cont <= 1.0:
-                        pts_scatter.append((ident, cont))
+                    pts_all_631.append((ident, cont))
 
-    sx0, sx1 = 500, 706
+    # OLS slope & intercept across all 631 qualifying windows
+    mean_x = sum(x for x, _ in pts_all_631) / len(pts_all_631)
+    mean_y = sum(y for _, y in pts_all_631) / len(pts_all_631)
+    slope = sum((x - mean_x) * (y - mean_y) for x, y in pts_all_631) / sum((x - mean_x) ** 2 for x, _ in pts_all_631)
+    intercept = mean_y - slope * mean_x
+
+    sx0, sx1 = 506, 706
     sy0, sy1 = 58, 255
 
     def x_ident(id_pct: float) -> float:
         return sx0 + ((id_pct - 93.0) / 7.0) * (sx1 - sx0)
 
     def y_cont(c: float) -> float:
-        return sy1 - ((c - 0.55) / 0.45) * (sy1 - sy0)
+        return sy1 - ((c - 0.50) / 0.50) * (sy1 - sy0)
 
     for id_t in [93, 95, 97, 99, 100]:
         xx = x_ident(id_t)
         out.append(f'<line x1="{xx:.1f}" y1="{sy0}" x2="{xx:.1f}" y2="{sy1}" stroke="{LINE}" stroke-dasharray="2,2"/>')
         out.append(f'<text x="{xx:.1f}" y="{sy1+15}" text-anchor="middle" class="ax">{id_t}%</text>')
-    for ct in [0.6, 0.7, 0.8, 0.9, 1.0]:
+    for ct in [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
         yy = y_cont(ct)
         out.append(f'<line x1="{sx0}" y1="{yy:.1f}" x2="{sx1}" y2="{yy:.1f}" stroke="{LINE}" stroke-dasharray="2,2"/>')
         out.append(f'<text x="{sx0-5}" y="{yy+3:.1f}" text-anchor="end" class="ax">{ct:.1f}</text>')
+    out.append(f'<text x="472" y="{(sy0+sy1)/2:.1f}" text-anchor="middle" class="lbl" transform="rotate(-90 472 {(sy0+sy1)/2:.1f})">cs10 k = 21 containment</text>')
 
-    for ident, cont in pts_scatter[::2]:
-        out.append(f'<circle cx="{x_ident(ident):.1f}" cy="{y_cont(cont):.1f}" r="2.1" fill="{BLUE}" opacity="0.55"/>')
+    for ident, cont in pts_all_631:
+        xc = max(sx0 + 1.5, min(sx1 - 1.5, x_ident(ident)))
+        yc = max(sy0 + 1.5, min(sy1 - 1.5, y_cont(cont)))
+        out.append(f'<circle cx="{xc:.1f}" cy="{yc:.1f}" r="1.9" fill="{BLUE}" opacity="0.48"/>')
 
-    out.append(f'<line x1="{x_ident(94.0):.1f}" y1="{y_cont(0.62):.1f}" x2="{x_ident(99.5):.1f}" y2="{y_cont(0.93):.1f}" stroke="{VERMILION}" stroke-width="2.2"/>')
+    x_ols0, x_ols1 = 93.4, 99.6
+    y_ols0, y_ols1 = intercept + slope * x_ols0, intercept + slope * x_ols1
+    out.append(f'<line x1="{x_ident(x_ols0):.1f}" y1="{y_cont(y_ols0):.1f}" x2="{x_ident(x_ols1):.1f}" y2="{y_cont(y_ols1):.1f}" stroke="{VERMILION}" stroke-width="2.2"/>')
     out.append(f'<rect x="{sx0+6}" y="{sy0+5}" width="174" height="14" rx="2" fill="#ffffff" opacity="0.9"/>')
-    out.append(f'<text x="{sx0+8}" y="{sy0+16}" class="lbl" fill="{BLUE}">GRMa (631 win, r = 0.8118)</text>')
+    out.append(f'<text x="{sx0+8}" y="{sy0+16}" class="lbl" fill="{BLUE}">GRMa ({len(pts_all_631)} win, r = 0.8118)</text>')
     out.append(f'<text x="{(sx0+sx1)/2:.1f}" y="{sy1+30}" text-anchor="middle" class="lbl">cs10 rbest chain identity (%)</text>')
 
     rx = 720
@@ -784,21 +832,21 @@ def build_figure5() -> None:
     out.append(f'<text x="{rx+8}" y="75" class="lbl" fill="{NAVY}">Tier P2 V1 (42 queries)</text>')
     out.append(f'<text x="{rx+8}" y="92" class="lbl" fill="{GREEN}">41 / 42 pass r ≥ 0.50</text>')
     out.append(f'<text x="{rx+8}" y="107" class="ax">• Range: 0.5848–0.8118</text>')
-    out.append(f'<text x="{rx+8}" y="121" class="ax">• Pink pepper: r = 0.7376</text>')
+    out.append(f'<text x="{rx+8}" y="121" class="ax">• G3: 2 SUP ONT flags</text>')
     out.append(f'<text x="{rx+8}" y="135" class="ax" fill="{VERMILION}">• ASM5191173v1: r = 0.4763</text>')
 
     out.append(f'<rect x="{rx}" y="148" width="168" height="82" rx="7" fill="{BG_SOFT}" stroke="{LINE}"/>')
     out.append(f'<text x="{rx+8}" y="165" class="lbl" fill="{NAVY}">TOGA2 v2.0.9 Pilot</text>')
     out.append(f'<text x="{rx+8}" y="182" class="lbl" fill="{BLUE}">24,503 std / 758 anom</text>')
-    out.append(f'<text x="{rx+8}" y="197" class="ax">• Control: 25 lost (0.10%)</text>')
-    out.append(f'<text x="{rx+8}" y="211" class="ax">• 54 min, 1.87 GB peak RAM</text>')
+    out.append(f'<text x="{rx+8}" y="197" class="ax">• C-floor: 25 L/M/UL (0.10%)</text>')
+    out.append(f'<text x="{rx+8}" y="211" class="ax">• EH23a: 8.5% prod / 7.3% loose</text>')
     out.append(f'<text x="{rx+8}" y="225" class="ax">• 221 all.chain (1.45 TB)</text>')
 
     out.append(f'<rect x="{rx}" y="238" width="168" height="80" rx="7" fill="#fff4d1" stroke="{GOLD}"/>')
     out.append(f'<text x="{rx+8}" y="255" class="lbl" fill="{NAVY}">Phenotype Ledger</text>')
     out.append(f'<text x="{rx+8}" y="272" class="lbl">1,341 rows · 154 plants</text>')
-    out.append(f'<text x="{rx+8}" y="287" class="ax">• 78 pedigree families</text>')
-    out.append(f'<text x="{rx+8}" y="301" class="ax">• 69 in largest Salk family</text>')
+    out.append(f'<text x="{rx+8}" y="287" class="ax">• 40 sources (43 paper audits)</text>')
+    out.append(f'<text x="{rx+8}" y="301" class="ax">• 78 families (69 in Salk fam)</text>')
     out.append(f'<text x="{rx+8}" y="314" class="ax">• 0/14 traits pass ≥30-fam</text>')
 
     out.append("</svg>")

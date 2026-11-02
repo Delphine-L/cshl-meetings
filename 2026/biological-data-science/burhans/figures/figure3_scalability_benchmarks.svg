@@ -300,6 +300,6 @@
 <text x="652" y="240" class="ax mono" fill="#ffffff" font-weight="700">Baseline piece merge: 26.8 core-h</text>
 <rect x="646" y="250" width="33.6" height="20" rx="3" fill="#009E73"/>
 <text x="686" y="264" class="lbl mono" fill="#009E73">4.1 core-h (6.5×, col-count DP)</text>
-<rect x="646" y="282" width="236" height="32" rx="6" fill="#fff4d1" stroke="#f2b10f"/>
-<text x="764" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t blocks)</text>
+<rect x="642" y="282" width="244" height="32" rx="6" fill="#fff4d1" stroke="#f2b10f"/>
+<text x="764" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t)</text>
 </svg>

@@ -142,16 +142,16 @@ def build_figure1() -> None:
     ]
     for i, (dname, val, col, txt) in enumerate(dets):
         yy = by0 + 31 + i * 12.5
-        out.append(f'<text x="114" y="{yy+4}" text-anchor="end" class="ax">{esc(dname)}</text>')
-        bw = (val / 75.0) * 102.0
-        out.append(f'<rect x="120" y="{yy-4}" width="{bw:.1f}" height="8" rx="2" fill="{col}"/>')
-        out.append(f'<text x="{124+bw:.1f}" y="{yy+4}" class="ax mono">{esc(txt)}</text>')
+        out.append(f'<text x="104" y="{yy+4}" text-anchor="end" class="ax">{esc(dname)}</text>')
+        bw = (val / 75.0) * 78.0
+        out.append(f'<rect x="108" y="{yy-4}" width="{bw:.1f}" height="8" rx="2" fill="{col}"/>')
+        out.append(f'<text x="{112+bw:.1f}" y="{yy+4}" class="ax mono">{esc(txt)}</text>')
 
-    out.append(f'<line x1="306" y1="{by0+24}" x2="306" y2="{by0+88}" stroke="{LINE}"/>')
-    out.append(f'<text x="314" y="{by0+38}" class="lbl" fill="{GREEN}">+167.5–170.2 Mb</text>')
-    out.append(f'<text x="314" y="{by0+51}" class="ax">restored unmasked</text>')
-    out.append(f'<text x="314" y="{by0+69}" class="lbl" fill="{VERMILION}">44.4–51.9 Mb</text>')
-    out.append(f'<text x="314" y="{by0+82}" class="ax">newly masked DNA</text>')
+    out.append(f'<line x1="312" y1="{by0+24}" x2="312" y2="{by0+88}" stroke="{LINE}"/>')
+    out.append(f'<text x="320" y="{by0+38}" class="lbl" fill="{GREEN}">+167.5–170.2 Mb</text>')
+    out.append(f'<text x="320" y="{by0+51}" class="ax">restored unmasked</text>')
+    out.append(f'<text x="320" y="{by0+69}" class="lbl" fill="{VERMILION}">44.4–51.9 Mb</text>')
+    out.append(f'<text x="320" y="{by0+82}" class="ax">newly masked DNA</text>')
 
     # Panel Divider at x = 448
     out.append(f'<line x1="448" y1="14" x2="448" y2="{h-14}" stroke="{LINE}" stroke-width="1.5"/>')
@@ -213,7 +213,7 @@ def build_figure1() -> None:
         out.append(f'<text x="842" y="{yy+10}" class="ax mono">{n_pieces} pcs</text>')
 
     out.append(f'<rect x="462" y="352" width="424" height="26" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append('<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 chr pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs) highlighted</text>')
+    out.append('<text x="674" y="369" text-anchor="middle" class="lbl">185 cuts (195 pieces, mean 4.38 Mb, 172 in gaps) · chr7 (16 pcs)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure1_architecture.svg").write_text("\n".join(out))
@@ -290,12 +290,12 @@ def build_figure2() -> None:
     out.append(f'<text x="{x_id(90):.1f}" y="{ay0+14}" text-anchor="middle" class="lbl" fill="{GREEN}">[85, 95)%</text>')
     out.append(f'<text x="{x_id(90):.1f}" y="{ay0+26}" text-anchor="middle" class="ax" fill="{GREEN}">82.8 Mb (331M 4×)</text>')
 
-    # Bottom-right legend strictly below the plot frame (x in [72, 254], y in [276, 322])
-    out.append(f'<rect x="72" y="276" width="182" height="44" rx="4" fill="#ffffff" stroke="{LINE}"/>')
-    out.append(f'<line x1="78" y1="290" x2="91" y2="290" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
-    out.append('<text x="95" y="293" class="ax">Unfiltered (45.2% &lt;70% id)</text>')
-    out.append(f'<line x1="78" y1="308" x2="91" y2="308" stroke="{BLUE}" stroke-width="2.6"/>')
-    out.append('<text x="95" y="311" class="ax">Colinear 1-chain (54.5% vs 6.6%)</text>')
+    # Bottom-right legend strictly below the plot frame (x in [56, 254], y in [276, 322])
+    out.append(f'<rect x="56" y="276" width="198" height="44" rx="4" fill="#ffffff" stroke="{LINE}"/>')
+    out.append(f'<line x1="62" y1="290" x2="75" y2="290" stroke="{VERMILION}" stroke-width="2.2" stroke-dasharray="4,3"/>')
+    out.append('<text x="79" y="293" class="ax">Unfiltered (45.2% &lt;70% id)</text>')
+    out.append(f'<line x1="62" y1="308" x2="75" y2="308" stroke="{BLUE}" stroke-width="2.6"/>')
+    out.append('<text x="79" y="311" class="ax">Colinear 1-chain (54.5% vs 6.6%)</text>')
 
     # Divider 1 at x = 266
     out.append(f'<line x1="266" y1="12" x2="266" y2="{h-12}" stroke="{LINE}"/>')
@@ -600,8 +600,8 @@ def build_figure3() -> None:
     out.append(f'<rect x="{cx0}" y="250" width="33.6" height="20" rx="3" fill="{GREEN}"/>')
     out.append(f'<text x="{cx0+40}" y="264" class="lbl mono" fill="{GREEN}">4.1 core-h (6.5×, col-count DP)</text>')
 
-    out.append(f'<rect x="{cx0}" y="282" width="236" height="32" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
-    out.append(f'<text x="{cx0+118}" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t blocks)</text>')
+    out.append(f'<rect x="{cx0-4}" y="282" width="244" height="32" rx="6" fill="#fff4d1" stroke="{GOLD}"/>')
+    out.append(f'<text x="{cx0+118}" y="302" text-anchor="middle" class="lbl">Byte-identical 217-way MAF (29 int64_t)</text>')
 
     out.append("</svg>")
     (OUT_DIR / "figure3_scalability_benchmarks.svg").write_text("\n".join(out))

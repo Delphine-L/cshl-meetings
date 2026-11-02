@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Generate data-dense BioVis-standard SVG figures for the CSHL 2026 HighGen poster.
 
-All data are read directly from primary TSV/BED files in /home/rcb112/project/gemini/cannabis.
+All data are read directly from primary TSV/BED files in the cannabis-genome checkout
+($CANNABIS_ROOT, default /home/rcb112/project/claude/bench/repos/cannabis-genome).
 Follows Anton Nekrutenko / writing-repo rules:
 - Okabe-Ito colorblind-safe palette
 - Whole-line <text> runs (never word-positioned SVG text)
@@ -11,11 +12,12 @@ Follows Anton Nekrutenko / writing-repo rules:
 from __future__ import annotations
 
 import csv
+import os
 import statistics
 from pathlib import Path
 
-CANNABIS_ROOT = Path("/home/rcb112/project/gemini/cannabis")
-OUT_DIR = Path("/home/rcb112/project/gemini/cshl-meetings/2026/biological-data-science/burhans/figures")
+CANNABIS_ROOT = Path(os.environ.get("CANNABIS_ROOT", "/home/rcb112/project/claude/bench/repos/cannabis-genome"))
+OUT_DIR = Path(os.environ.get("POSTER_FIGURES_DIR", Path(__file__).resolve().parent / "figures"))
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Okabe-Ito + poster palette
@@ -307,7 +309,7 @@ def build_figure2() -> None:
         10,
         "B",
         "10-Chr Held-Out Referee (Cb2 × cs10)",
-        "9/9 completed arms (chr8 OOM), 9/10 loci, 67/70 windows",
+        "10/10 arms (chr8 re-run after OOM), 9/10 loci, 67/70 windows",
     )
 
     chrom_tags = ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chrX"]
